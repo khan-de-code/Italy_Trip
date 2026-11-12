@@ -328,7 +328,7 @@
           <span>Shortlisted</span>
           <span id="shortlist-count" class="font-mono font-semibold px-1.5 py-0.2 bg-surface border border-hairline rounded text-[11px] tabular-nums">0</span>
           <span class="text-hairline">|</span>
-          <span class="font-mono text-[11px] text-muted tabular-nums" title="Estimated base adult attraction tickets for shortlisted items">
+          <span class="font-mono text-[11px] text-muted tabular-nums" title="Sum of the low-end adult price for each shortlisted row. A range contributes its lower number.">
             Est. Tickets: <strong id="shortlist-total-eur" class="text-ink font-semibold">&euro;0.00</strong>/adult
           </span>
         </button>
@@ -2782,6 +2782,19 @@
       });
     }
 
+    // Low end of the price shown in the row. "€8–€15" contributes 8.
+    // A free row with a paid option, such as "€0.00 / €15.00", contributes the paid amount.
+    function baseAdultEstimateEur(item) {
+      if (!item) return 0;
+      const matches = String(item.priceDisplay || '').match(/\d+(?:\.\d+)?/g);
+      if (matches) {
+        const amounts = matches.map(Number).filter(amount => Number.isFinite(amount) && amount > 0);
+        if (amounts.length) return Math.min(...amounts);
+      }
+      const fallback = Number(item.adultPriceEur);
+      return Number.isFinite(fallback) && fallback > 0 ? fallback : 0;
+    }
+
     // UPDATE COUNTS & SHORTLIST ESTIMATOR
     function updateCounters(filteredCount) {
       document.getElementById('shown-count').textContent = filteredCount;
@@ -2808,10 +2821,7 @@
       document.getElementById('shortlist-count').textContent = state.shortlisted.size;
       let totalAdultEur = 0;
       state.shortlisted.forEach(id => {
-        const found = itineraryItems.find(i => i.id === id);
-        if (found && found.adultPriceEur > 0) {
-          totalAdultEur += found.adultPriceEur;
-        }
+        totalAdultEur += baseAdultEstimateEur(itineraryItems.find(i => i.id === id));
       });
       document.getElementById('shortlist-total-eur').textContent = `€${totalAdultEur.toFixed(2)}`;
 
