@@ -1,0 +1,3229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Italy Family Trip — Master Planning Matrix</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Fraunces, Plus Jakarta Sans, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            serif: ['"Fraunces"', 'Georgia', 'serif'],
+            sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace'],
+          },
+          colors: {
+            paper: '#FAF9F6',
+            surface: '#FFFFFF',
+            hairline: '#E5E2DC',
+            ink: '#1C1917',
+            muted: '#57534E',
+            subtle: '#78716C',
+            terracotta: {
+              50: '#FDF5F3',
+              100: '#FAE6E0',
+              600: '#B84A32',
+              700: '#9A3B26',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FAF9F6;
+      color: #1C1917;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    }
+    .tabular-nums {
+      font-variant-numeric: tabular-nums;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #F5F3EE;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #D6D1C7;
+      border-radius: 9999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #A8A29E;
+    }
+    @media print {
+      .no-print {
+        display: none !important;
+      }
+      body {
+        background-color: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      #matrix-wrapper {
+        border: none !important;
+        box-shadow: none !important;
+      }
+      table {
+        font-size: 10px !important;
+      }
+      th, td {
+        padding: 6px 8px !important;
+      }
+    }
+  </style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col selection:bg-terracotta-100 selection:text-terracotta-700">
+
+  <!-- TOP HEADER BAR -->
+  <header class="bg-surface border-b border-hairline sticky top-0 z-30">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <!-- Title & Metadata -->
+        <div>
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted mb-1">
+            <span class="font-mono uppercase tracking-wider text-[11px] font-medium text-terracotta-700 bg-terracotta-50 border border-terracotta-100 px-2 py-0.5 rounded">
+              Master Planning Matrix
+            </span>
+            <span>Created Oct 31, 2026</span>
+            <span aria-hidden="true">&bull;</span>
+            <span>Updated Nov 11, 2026</span>
+          </div>
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h1 class="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-ink">
+              Italy Family Trip
+            </h1>
+            <span class="text-sm font-medium text-muted">
+              Naples &bull; Sorrento &amp; Amalfi Coast &bull; Rome
+            </span>
+          </div>
+        </div>
+
+        <!-- Compact Action Cluster: Search, View Toggle, Print -->
+        <div class="flex flex-wrap items-center gap-2.5 no-print">
+          <!-- Search Input -->
+          <div class="relative flex-1 sm:flex-initial sm:w-72 md:w-80">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-subtle">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+            </span>
+            <input
+              type="text"
+              id="search-input"
+              oninput="handleSearchInput()"
+              placeholder="Search sites, prices, rules, streets..."
+              class="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-paper border border-hairline rounded-lg text-ink placeholder-subtle focus:outline-none focus:bg-surface focus:border-ink transition"
+            >
+            <button
+              id="clear-search-btn"
+              onclick="clearSearch()"
+              aria-label="Clear search"
+              class="hidden absolute inset-y-0 right-0 pr-2.5 flex items-center text-subtle hover:text-ink"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+            </button>
+          </div>
+
+          <!-- View Mode Toggle -->
+          <div class="inline-flex items-center bg-paper border border-hairline rounded-lg p-0.5 text-xs font-medium" role="group" aria-label="View mode">
+            <button
+              id="btn-view-matrix"
+              onclick="setViewMode('matrix')"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface text-ink border border-hairline shadow-2xs transition"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>
+              <span>Matrix Table</span>
+            </button>
+            <button
+              id="btn-view-cards"
+              onclick="setViewMode('cards')"
+              class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-muted hover:text-ink border border-transparent transition"
+            >
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>
+              <span>Structured Cards</span>
+            </button>
+          </div>
+
+          <!-- Print / PDF Button -->
+          <button
+            onclick="window.print()"
+            class="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium bg-surface hover:bg-paper text-ink border border-hairline rounded-lg transition"
+            title="Print or Save as PDF"
+          >
+            <svg class="w-4 h-4 text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14"/></svg>
+            <span class="hidden sm:inline">Print / PDF</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- COLLAPSIBLE REFERENCE STRIP -->
+  <section class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 pt-4 no-print">
+    <div class="bg-surface border border-hairline rounded-xl overflow-hidden">
+      <button
+        type="button"
+        onclick="toggleReferenceStrip()"
+        aria-expanded="false"
+        id="ref-strip-toggle"
+        class="w-full px-4 py-3 flex items-center justify-between text-left hover:bg-paper/70 transition"
+      >
+        <div class="flex items-center gap-2.5">
+          <span class="w-7 h-7 rounded-lg bg-paper border border-hairline flex items-center justify-center text-ink">
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </span>
+          <div>
+            <span class="text-xs sm:text-sm font-semibold text-ink">
+              Culture Notes, Local Specialties &amp; Family Logistics
+            </span>
+            <span class="hidden md:inline text-xs text-muted ml-2">
+              &mdash; Dining hours, coffee bar etiquette, regional foods, split Amalfi itinerary &amp; eSIM notes
+            </span>
+          </div>
+        </div>
+        <span class="inline-flex items-center gap-1 text-xs font-medium text-muted">
+          <span id="ref-strip-label">Expand</span>
+          <svg id="ref-strip-chevron" class="w-4 h-4 transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+        </span>
+      </button>
+
+      <div id="ref-strip-body" class="hidden border-t border-hairline bg-paper/50 px-4 py-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+          <!-- Column 1: Culture Notes -->
+          <div class="bg-surface border border-hairline rounded-lg p-3.5 space-y-2">
+            <div class="flex items-center gap-1.5 font-semibold text-ink uppercase tracking-wider text-[11px]">
+              <svg class="w-3.5 h-3.5 text-terracotta-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Culture &amp; Dining Schedule</span>
+            </div>
+            <ul class="space-y-1.5 text-muted leading-relaxed">
+              <li><strong class="text-ink font-medium">Lunch:</strong> Typically 12:30 PM &ndash; 3:00 PM.</li>
+              <li><strong class="text-ink font-medium">Dinner:</strong> From 8:00 PM onward.</li>
+              <li><strong class="text-ink font-medium">Mid-Afternoon Gap:</strong> Unlikely to find many sit-down restaurants open outside lunch and dinner shifts.</li>
+              <li><strong class="text-ink font-medium">Coffee Bar Etiquette:</strong> Stand at the counter (<em>al banco</em>) for a quick espresso &mdash; local custom and significantly cheaper than table service.</li>
+            </ul>
+          </div>
+
+          <!-- Column 2: Things to Try -->
+          <div class="bg-surface border border-hairline rounded-lg p-3.5 space-y-2">
+            <div class="flex items-center gap-1.5 font-semibold text-ink uppercase tracking-wider text-[11px]">
+              <svg class="w-3.5 h-3.5 text-terracotta-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>
+              <span>Things to Try</span>
+            </div>
+            <dl class="space-y-1.5 text-muted leading-relaxed">
+              <div><dt class="inline font-medium text-ink">Baladin:</dt> <dd class="inline">Italian craft beer similar to ale.</dd></div>
+              <div><dt class="inline font-medium text-ink">Aperol:</dt> <dd class="inline">Italian bitter ap&eacute;ritif liqueur (Aperol Spritz).</dd></div>
+              <div><dt class="inline font-medium text-ink">Sfogliatella:</dt> <dd class="inline">Classic shell-shaped Neapolitan breakfast pastry.</dd></div>
+              <div><dt class="inline font-medium text-ink">Montanara:</dt> <dd class="inline">Deep-fried street pizza topped with tomato &amp; cheese.</dd></div>
+              <div><dt class="inline font-medium text-ink">Delizia al Limone &amp; Limoncello:</dt> <dd class="inline">Amalfi Coast lemon sponge dessert &amp; lemon liqueur.</dd></div>
+            </dl>
+          </div>
+
+          <!-- Column 3: Family Ideas & Logistics -->
+          <div class="bg-surface border border-hairline rounded-lg p-3.5 space-y-2">
+            <div class="flex items-center gap-1.5 font-semibold text-ink uppercase tracking-wider text-[11px]">
+              <svg class="w-3.5 h-3.5 text-terracotta-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/><line x1="9" x2="9" y1="3" y2="18"/><line x1="15" x2="15" y1="6" y2="21"/></svg>
+              <span>Family Ideas &amp; Connectivity</span>
+            </div>
+            <ul class="space-y-2 text-muted leading-relaxed">
+              <li>
+                <strong class="text-ink font-medium block">Split Amalfi Coast Day:</strong>
+                Some family members (Mom / hikers) can hike the Path of the Gods (Bomerano to Nocelle) while others scooter or ferry along the coastline and reunite in Positano or Amalfi.
+              </li>
+              <li>
+                <strong class="text-ink font-medium block">eSIM Option &mdash; Holafly:</strong>
+                Recommended unlimited-data eSIM for Italy so everyone has reliable maps, translation, and QR ticket access on the move.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 py-4 flex-1">
+
+    <!-- FILTER & NAVIGATION BAR -->
+    <div class="bg-surface border border-hairline rounded-xl p-3 sm:p-4 mb-4 space-y-3 no-print">
+      <!-- Row 1: Region Tabs -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-hairline">
+        <div class="flex items-center gap-1.5 overflow-x-auto custom-scroll pb-1 sm:pb-0" role="tablist" aria-label="Filter by region">
+          <button onclick="setRegion('all')" data-region="all" class="region-tab px-3 py-1.5 rounded-lg text-xs font-semibold bg-ink text-white transition whitespace-nowrap">
+            All (<span id="count-region-all">85</span>)
+          </button>
+          <button onclick="setRegion('naples')" data-region="naples" class="region-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-paper text-muted hover:text-ink border border-hairline transition whitespace-nowrap">
+            Naples (<span id="count-region-naples">42</span>)
+          </button>
+          <button onclick="setRegion('daytrips')" data-region="daytrips" class="region-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-paper text-muted hover:text-ink border border-hairline transition whitespace-nowrap">
+            Day Trips (<span id="count-region-daytrips">3</span>)
+          </button>
+          <button onclick="setRegion('amalfi')" data-region="amalfi" class="region-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-paper text-muted hover:text-ink border border-hairline transition whitespace-nowrap">
+            Sorrento &amp; Amalfi (<span id="count-region-amalfi">19</span>)
+          </button>
+          <button onclick="setRegion('rome')" data-region="rome" class="region-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-paper text-muted hover:text-ink border border-hairline transition whitespace-nowrap">
+            Rome (<span id="count-region-rome">21</span>)
+          </button>
+        </div>
+
+        <!-- Result counter + Reset -->
+        <div class="flex items-center justify-between sm:justify-end gap-3 text-xs text-muted shrink-0">
+          <span>
+            Showing <strong id="shown-count" class="font-mono text-ink">85</strong> of <span id="total-count" class="font-mono">85</span>
+          </span>
+          <button id="reset-filters-btn" onclick="resetFilters()" class="hidden text-terracotta-700 hover:underline font-medium">
+            Reset filters
+          </button>
+        </div>
+      </div>
+
+      <!-- Row 2: Booking & Cost Filter Chips + Shortlist Live Estimator -->
+      <div class="flex flex-wrap items-center justify-between gap-2">
+        <div class="flex flex-wrap items-center gap-1.5">
+          <span class="inline-flex items-center gap-1 text-[11px] font-mono uppercase tracking-wider text-subtle mr-1">
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+            <span>Access:</span>
+          </span>
+
+          <button onclick="setAccessFilter('all')" data-access="all" class="access-chip px-2.5 py-1 rounded-md text-xs font-semibold bg-ink text-white transition">
+            All
+          </button>
+          <button onclick="setAccessFilter('strict')" data-access="strict" class="access-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-rose-50 text-rose-800 border border-rose-200 hover:bg-rose-100 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+            <span>Strict Advance</span>
+            <span class="font-mono text-[11px] opacity-80" id="count-chip-strict">0</span>
+          </button>
+          <button onclick="setAccessFilter('flexible')" data-access="flexible" class="access-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+            <span>Paid &mdash; Flexible</span>
+            <span class="font-mono text-[11px] opacity-80" id="count-chip-flexible">0</span>
+          </button>
+          <button onclick="setAccessFilter('free')" data-access="free" class="access-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+            <span>Free Access</span>
+            <span class="font-mono text-[11px] opacity-80" id="count-chip-free">0</span>
+          </button>
+          <button onclick="setAccessFilter('dining')" data-access="dining" class="access-chip inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-orange-50 text-orange-900 border border-orange-200 hover:bg-orange-100 transition">
+            <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+            <span>Dining</span>
+            <span class="font-mono text-[11px] opacity-80" id="count-chip-dining">0</span>
+          </button>
+        </div>
+
+        <!-- Shortlist Toggle Pill with Live Adult Ticket Total -->
+        <button
+          id="shortlist-toggle-btn"
+          onclick="toggleShortlistOnly()"
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-paper hover:bg-amber-50/70 text-ink border border-hairline transition"
+        >
+          <svg id="shortlist-header-star" class="w-3.5 h-3.5 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>Shortlisted</span>
+          <span id="shortlist-count" class="font-mono font-semibold px-1.5 py-0.2 bg-surface border border-hairline rounded text-[11px] tabular-nums">0</span>
+          <span class="text-hairline">|</span>
+          <span class="font-mono text-[11px] text-muted tabular-nums" title="Estimated base adult attraction tickets for shortlisted items">
+            Est. Tickets: <strong id="shortlist-total-eur" class="text-ink font-semibold">&euro;0.00</strong>/adult
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MATRIX TABLE VIEW (DEFAULT) -->
+    <div id="matrix-wrapper" class="bg-surface border border-hairline rounded-xl overflow-hidden">
+      <div class="overflow-x-auto custom-scroll">
+        <table class="w-full border-collapse text-left">
+          <thead>
+            <tr class="bg-paper border-b border-hairline text-[11px] font-mono uppercase tracking-wider text-muted">
+              <th scope="col" class="py-3 pl-3 pr-2 w-10 text-center">
+                <span class="sr-only">Shortlist</span>
+                <svg class="w-3.5 h-3.5 mx-auto text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              </th>
+              <th scope="col" class="py-3 px-3 min-w-[230px]">Place / Attraction &amp; Sub-Area</th>
+              <th scope="col" class="py-3 px-3 min-w-[175px]">Booking Tier</th>
+              <th scope="col" class="py-3 px-3 min-w-[180px] text-right">Admission Cost</th>
+              <th scope="col" class="py-3 px-3 min-w-[270px]">Hours &amp; Entry Restrictions</th>
+              <th scope="col" class="py-3 pl-2 pr-4 w-10 text-right">
+                <span class="sr-only">Details</span>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="matrix-tbody" class="divide-y divide-hairline text-xs sm:text-[13px]">
+            <!-- Rows injected via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="hidden py-16 px-4 text-center">
+        <div class="w-10 h-10 rounded-full bg-paper border border-hairline flex items-center justify-center mx-auto mb-3 text-subtle">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <p class="font-serif text-lg font-semibold text-ink">No matching itinerary items</p>
+        <p class="text-xs text-muted mt-1 max-w-md mx-auto">
+          No sites or restaurants match your active region, access chip, or search query.
+        </p>
+        <button onclick="resetFilters()" class="mt-4 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-ink text-white hover:bg-stone-800 transition">
+          Reset all filters
+        </button>
+      </div>
+    </div>
+
+    <!-- STRUCTURED CARDS VIEW -->
+    <div id="cards-wrapper" class="hidden grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3.5">
+      <!-- Cards injected via JavaScript -->
+    </div>
+
+  </main>
+
+  <!-- SLIDE-OVER DETAIL DRAWER -->
+  <div id="detail-drawer-backdrop" class="hidden fixed inset-0 z-50 bg-stone-900/35 backdrop-blur-[1px] transition-opacity" onclick="closeDrawer()">
+    <aside
+      id="detail-drawer-panel"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="drawer-title"
+      onclick="event.stopPropagation()"
+      class="fixed inset-y-0 right-0 w-full max-w-lg bg-surface border-l border-hairline shadow-2xl flex flex-col overflow-hidden"
+    >
+      <!-- Drawer Top Header -->
+      <div class="px-5 py-4 bg-paper border-b border-hairline flex items-center justify-between gap-3">
+        <div class="flex items-center gap-2 text-xs text-muted font-mono">
+          <span id="drawer-region-badge" class="uppercase font-semibold text-terracotta-700">REGION</span>
+          <span>/</span>
+          <span id="drawer-number">#01</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button
+            id="drawer-star-btn"
+            onclick="toggleShortlistFromDrawer()"
+            class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface border border-hairline hover:bg-paper transition"
+          >
+            <svg id="drawer-star-icon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            <span id="drawer-star-label">Shortlist</span>
+          </button>
+          <button
+            onclick="closeDrawer()"
+            aria-label="Close detail panel"
+            class="p-1.5 rounded-lg text-muted hover:text-ink hover:bg-surface border border-transparent hover:border-hairline transition"
+          >
+            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Drawer Scrollable Content -->
+      <div class="p-5 sm:p-6 overflow-y-auto custom-scroll flex-1 space-y-5">
+        <div>
+          <div id="drawer-tier-container" class="mb-2.5"></div>
+          <h2 id="drawer-title" class="font-serif text-2xl font-bold text-ink leading-snug">
+            Attraction Name
+          </h2>
+          <div class="flex items-start gap-1.5 text-xs text-muted mt-1.5">
+            <svg class="w-3.5 h-3.5 mt-0.5 shrink-0 text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+            <span id="drawer-address">Sub-area &bull; Address</span>
+          </div>
+        </div>
+
+        <!-- Receipt Block: 2026 Admission Breakdown -->
+        <div class="bg-paper border border-hairline rounded-xl p-4">
+          <div class="flex items-center justify-between pb-2 mb-2.5 border-b border-hairline">
+            <span class="inline-flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider font-semibold text-ink">
+              <svg class="w-3.5 h-3.5 text-terracotta-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/></svg>
+              <span>2026 Admission &amp; Tiers</span>
+            </span>
+            <span class="text-[11px] font-mono text-subtle">EUR (&euro;)</span>
+          </div>
+          <div id="drawer-admission-list" class="space-y-1.5 text-xs">
+            <!-- Breakdown rows injected via JS -->
+          </div>
+        </div>
+
+        <!-- Hours & Booking Lead Time -->
+        <div class="grid grid-cols-1 gap-3">
+          <div class="bg-surface border border-hairline rounded-xl p-3.5">
+            <div class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider font-semibold text-ink mb-1">
+              <svg class="w-3.5 h-3.5 text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              <span>Opening Hours &amp; Schedule</span>
+            </div>
+            <p id="drawer-hours" class="text-xs text-muted leading-relaxed"></p>
+          </div>
+
+          <div class="bg-surface border border-hairline rounded-xl p-3.5">
+            <div class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider font-semibold text-ink mb-1">
+              <svg class="w-3.5 h-3.5 text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+              <span>Booking Window &amp; Availability</span>
+            </div>
+            <p id="drawer-leadtime" class="text-xs text-muted leading-relaxed"></p>
+          </div>
+        </div>
+
+        <!-- Entry Restrictions & Rules -->
+        <div class="bg-amber-50/60 border border-amber-200/80 rounded-xl p-3.5">
+          <div class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider font-semibold text-amber-900 mb-1">
+            <svg class="w-3.5 h-3.5 text-amber-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+            <span>Entry Restrictions &amp; Site Rules</span>
+          </div>
+          <p id="drawer-restrictions" class="text-xs text-amber-950/90 leading-relaxed"></p>
+        </div>
+
+        <!-- Full Planning Notes -->
+        <div>
+          <h3 class="text-[11px] font-mono uppercase tracking-wider font-semibold text-subtle mb-1.5">
+            Itinerary Notes &amp; Highlights
+          </h3>
+          <p id="drawer-notes" class="text-xs sm:text-sm text-ink leading-relaxed"></p>
+        </div>
+
+        <!-- External Tour / Ticket Link -->
+        <div id="drawer-link-box" class="hidden pt-2">
+          <a
+            id="drawer-external-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-terracotta-600 hover:bg-terracotta-700 text-white transition"
+          >
+            <span>Open Saved Tour / Ticket Link</span>
+            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+          </a>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- SUBTLE STATUS NOTIFICATION -->
+  <div id="status-toast" class="fixed bottom-4 right-4 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-200 bg-ink text-white text-xs font-medium px-3.5 py-2 rounded-lg shadow-lg">
+    <span id="status-toast-text">Updated shortlist</span>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="bg-surface border-t border-hairline py-4 mt-8 text-xs text-muted">
+    <div class="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2">
+      <span>Italy Family Trip &mdash; Master Planning Matrix (85 Entries)</span>
+      <span class="font-mono text-[11px] text-subtle">2026 Admission &amp; Restriction Reference</span>
+    </div>
+  </footer>
+
+  <script>
+    // COMPLETE 85-ITEM DATASET WITH 2026 ADMISSION & ENTRY RESTRICTIONS
+    const itineraryItems = [
+      // --- NAPLES: ESSENTIAL PIZZERIAS (1-9) ---
+      {
+        id: "it-01",
+        num: 1,
+        name: "Da Attilio",
+        subArea: "Essential Pizzerias",
+        address: "Via Pignasecca, 17",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€8–€15",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat Lunch & Dinner (Closed Sun)",
+        restrictionSummary: "No reservations; arrive 15–20 min before opening",
+        leadTime: "Walk-in queue outside; no advance booking system.",
+        admissionBreakdown: [
+          { label: "Pizza & Beverage (À la carte)", price: "~€8.00–€15.00" }
+        ],
+        restrictionsFull: "Closed Sundays. Queue forms along Via Pignasecca prior to lunch (12:00) and dinner (19:00) openings.",
+        notes: "Famous Pignasecca pizzeria; arrive 15–20 min before opening. Known for sun-shaped ricotta-stuffed crust pizzas.",
+        link: null
+      },
+      {
+        id: "it-02",
+        num: 2,
+        name: "L’Antica Pizzeria da Michele",
+        subArea: "Essential Pizzerias",
+        address: "Via Cesare Sersale, 1",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€6–€10",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 11:00–23:00",
+        restrictionSummary: "Paper ticket queue at door; Margherita & Marinara only",
+        leadTime: "Same-day door queue ticket only; no reservations.",
+        admissionBreakdown: [
+          { label: "Margherita / Marinara Pizza", price: "~€6.00–€10.00" }
+        ],
+        restrictionsFull: "Take a numbered paper ticket directly from the host at the door and wait in the piazza until your number is called. Strictly serves Margherita and Marinara.",
+        notes: "Take a numbered paper ticket at the door; serves only Margherita and Marinara.",
+        link: null
+      },
+      {
+        id: "it-03",
+        num: 3,
+        name: "Sorbillo (Gino e Toto Sorbillo)",
+        subArea: "Essential Pizzerias",
+        address: "Via dei Tribunali, 32",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€8–€14",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat 12:00–23:30, Sun 12:00–15:30",
+        restrictionSummary: "Door waitlist; Sunday lunch service only",
+        leadTime: "Put your name on the door list early before rush hours.",
+        admissionBreakdown: [
+          { label: "Artisanal Pizza (À la carte)", price: "~€8.00–€14.00" }
+        ],
+        restrictionsFull: "Closes at 15:30 on Sundays. Heavy street crowds on Via dei Tribunali; check in with door staff immediately upon arrival.",
+        notes: "Iconic historic center pizzeria; put your name on the door list early.",
+        link: null
+      },
+      {
+        id: "it-04",
+        num: 4,
+        name: "50 Kalò",
+        subArea: "Essential Pizzerias",
+        address: "Piazza Sannazaro, 201/B",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€9–€16",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 12:00–16:30, 19:00–00:30",
+        restrictionSummary: "Digital waitlist queue at entrance",
+        leadTime: "Same-day digital waitlist at the door; no advance table bookings.",
+        admissionBreakdown: [
+          { label: "High-Hydration Pizza (À la carte)", price: "~€9.00–€16.00" }
+        ],
+        restrictionsFull: "Closed between 16:30 and 19:00 afternoon break. Join digital queue on-site.",
+        notes: "Digital waitlist queue at the door; acclaimed high-hydration dough near Mergellina.",
+        link: null
+      },
+      {
+        id: "it-05",
+        num: 5,
+        name: "Starita",
+        subArea: "Essential Pizzerias",
+        address: "Via Materdei, 27/28",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€8–€15",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Tue–Sun 12:00–15:30, 19:00–23:30 (Closed Mon)",
+        restrictionSummary: "Closed Mondays; walk-in queue",
+        leadTime: "Walk-in queue; arrive right at 12:00 or 19:00 to avoid long waits.",
+        admissionBreakdown: [
+          { label: "Montanara & Wood-Fired Pizza", price: "~€8.00–€15.00" }
+        ],
+        restrictionsFull: "Closed Mondays and afternoon shift 15:30–19:00.",
+        notes: "Historic Materdei pizzeria famous for fried Montanara.",
+        link: null
+      },
+      {
+        id: "it-06",
+        num: 6,
+        name: "Palazzo Petrucci Pizzeria",
+        subArea: "Essential Pizzerias",
+        address: "Piazza San Domenico Maggiore, 4",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Advance Recommended",
+        accessTags: ["dining"],
+        priceDisplay: "~€10–€18",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 12:30–23:30",
+        restrictionSummary: "Book ahead for rooftop terrace tables",
+        leadTime: "Reserve 3–7 days ahead for rooftop terrace seating.",
+        admissionBreakdown: [
+          { label: "Gourmet Pizza (À la carte)", price: "~€10.00–€18.00" }
+        ],
+        restrictionsFull: "Rooftop terrace tables are limited and prioritize advance reservations.",
+        notes: "Reserve ahead for rooftop terrace tables overlooking Piazza San Domenico Maggiore.",
+        link: null
+      },
+      {
+        id: "it-07",
+        num: 7,
+        name: "Antica Pizzeria Di Matteo",
+        subArea: "Essential Pizzerias",
+        address: "Via dei Tribunali, 94",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€6–€12",
+        priceSub: "À la carte / Street",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat 10:00–23:00 (Closed Sun)",
+        restrictionSummary: "Closed Sundays; street counter vs. upstairs dining",
+        leadTime: "Walk-in only for both ground-floor street food and upstairs dining room.",
+        admissionBreakdown: [
+          { label: "Upstairs Seated Pizza", price: "~€6.00–€12.00" },
+          { label: "Street-Side Friggitoria Snacks", price: "~€1.50–€4.00" }
+        ],
+        restrictionsFull: "Closed Sundays. Note exact name: Antica Pizzeria Di Matteo.",
+        notes: "Note exact name: Antica Pizzeria Di Matteo. Street-side fried snacks downstairs; upstairs dining room.",
+        link: null
+      },
+      {
+        id: "it-08",
+        num: 8,
+        name: "Concettina ai Tre Santi",
+        subArea: "Rione Sanità / Pizzerias",
+        address: "Via Arena della Sanità, 7 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "€12–€35+",
+        priceSub: "À la carte / Tasting",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Tue–Sun 12:30–15:30, 19:30–23:30 (Closed Mon)",
+        restrictionSummary: "Closed Mondays; mandatory online reservation",
+        leadTime: "Book online weeks ahead via official website.",
+        admissionBreakdown: [
+          { label: "À la carte Gourmet Pizza", price: "€12.00–€22.00" },
+          { label: "Multi-Course Tasting Menu", price: "€35.00+" }
+        ],
+        restrictionsFull: "Closed Mondays. High demand destination pizzeria; walk-ins rarely accommodated during prime dinner hours.",
+        notes: "Book online weeks ahead via website; fourth-generation pizzaiolo Ciro Oliva.",
+        link: null
+      },
+      {
+        id: "it-09",
+        num: 9,
+        name: "La Notizia",
+        subArea: "Essential Pizzerias",
+        address: "Via Michelangelo da Caravaggio, 53",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€10–€18",
+        priceSub: "À la carte (Dinner)",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Tue–Sun 19:30–23:30 (Closed Mon; dinner only)",
+        restrictionSummary: "Dinner service only; closed Mondays",
+        leadTime: "Book ahead by phone or online several days to a week prior.",
+        admissionBreakdown: [
+          { label: "Artisanal Pizza (À la carte)", price: "~€10.00–€18.00" }
+        ],
+        restrictionsFull: "Open for dinner only (19:30–23:30); closed Mondays. Located in Vomero hill district.",
+        notes: "Michelin-recognized artisanal pizza in Vomero; book ahead.",
+        link: null
+      },
+
+      // --- NAPLES: TRADITIONAL RESTAURANTS (10-14) ---
+      {
+        id: "it-10",
+        num: 10,
+        name: "Trattoria Da Nennella",
+        subArea: "Traditional Restaurants",
+        address: "Spanish Quarter (Piazza Carità area)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€15–€25",
+        priceSub: "Set / À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat 12:00–15:00, 19:00–23:00 (Closed Sun)",
+        restrictionSummary: "No reservations; put name on door board early",
+        leadTime: "Walk-in list at door only; arrive 30 min prior to opening.",
+        admissionBreakdown: [
+          { label: "Traditional Meal (Pasta e Patate, Main, Wine)", price: "~€15.00–€25.00" }
+        ],
+        restrictionsFull: "Closed Sundays and between 15:00–19:00. Lively, crowded room with singing waiters.",
+        notes: "Famous for pasta e patate and lively singing waiters; no reservations—put name on board early.",
+        link: null
+      },
+      {
+        id: "it-11",
+        num: 11,
+        name: "Antica Trattoria da Carmine",
+        subArea: "Traditional Restaurants",
+        address: "Via dei Tribunali",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["dining"],
+        priceDisplay: "~€15–€28",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat Lunch & Dinner (Closed Sun)",
+        restrictionSummary: "Closed Sundays; walk-in friendly for lunch",
+        leadTime: "Walk-in friendly, especially for early lunch.",
+        admissionBreakdown: [
+          { label: "Seafood & Neapolitan Lunch", price: "~€15.00–€28.00" }
+        ],
+        restrictionsFull: "Closed Sundays.",
+        notes: "Local favorite for lunch and authentic Neapolitan seafood.",
+        link: null
+      },
+      {
+        id: "it-12",
+        num: 12,
+        name: "Locanda del Gesù Vecchio",
+        subArea: "Traditional Restaurants",
+        address: "Near Spaccanapoli",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€18–€30",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Tue–Sun 12:30–15:00, 19:30–23:00 (Closed Mon)",
+        restrictionSummary: "Small dining room; book 3–7 days ahead",
+        leadTime: "Reserve 3–7 days in advance due to limited seating.",
+        admissionBreakdown: [
+          { label: "Pasta alla Genovese & Mains", price: "~€18.00–€30.00" }
+        ],
+        restrictionsFull: "Closed Mondays. Small intimate dining room fills quickly.",
+        notes: "Outstanding pasta alla Genovese; small dining room—book 3–7 days ahead.",
+        link: null
+      },
+      {
+        id: "it-13",
+        num: 13,
+        name: "La Cantina di Via Sapienza",
+        subArea: "Traditional Restaurants",
+        address: "Historic Center",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["dining"],
+        priceDisplay: "~€12–€22",
+        priceSub: "À la carte (Lunch)",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat 12:00–15:30 (Lunch-focused; Closed Sun)",
+        restrictionSummary: "Lunch hours only; closed Sundays",
+        leadTime: "Walk-in at opening (12:00) recommended.",
+        admissionBreakdown: [
+          { label: "Classic Eggplant Parmigiana & Sides", price: "~€12.00–€22.00" }
+        ],
+        restrictionsFull: "Primarily open for lunch service (12:00–15:30); closed Sundays.",
+        notes: "Classic eggplant parmigiana since 1900.",
+        link: null
+      },
+      {
+        id: "it-14",
+        num: 14,
+        name: "Tandem Ragù",
+        subArea: "Traditional Restaurants",
+        address: "Multiple locations (Historic Center)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Advance Recommended",
+        accessTags: ["dining"],
+        priceDisplay: "~€14–€24",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 12:30–15:30, 19:00–23:00",
+        restrictionSummary: "Book a few days prior for prime dinner slots",
+        leadTime: "Online reservation recommended 2–5 days ahead.",
+        admissionBreakdown: [
+          { label: "Neapolitan Ragù Pasta & Scarpetta", price: "~€14.00–€24.00" }
+        ],
+        restrictionsFull: "Closed between 15:30 and 19:00.",
+        notes: "Naples’ best slow-simmered meat sauce (ragù); book a few days prior.",
+        link: null
+      },
+
+      // --- NAPLES: SPANISH QUARTER (15-21) ---
+      {
+        id: "it-15",
+        num: 15,
+        name: "Church of Santa Maria degli Angeli",
+        subArea: "Spanish Quarter",
+        address: "Spanish Quarter",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Morning & late afternoon hours (closed midday)",
+        restrictionSummary: "Modest church attire; closed during midday break",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "General Admission", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Active parish church; closes midday (~12:30–16:30). Cover shoulders and knees.",
+        notes: "Hidden baroque gem from 1600 with an impressive dome and frescoes.",
+        link: null
+      },
+      {
+        id: "it-16",
+        num: 16,
+        name: "Palazzo Medicina",
+        subArea: "Spanish Quarter",
+        address: "Spanish Quarter",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free courtyard",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daytime courtyard access",
+        restrictionSummary: "Residential courtyard; quiet respect required",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Courtyard & Staircase Viewing", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Residential building; view courtyard and staircase quietly during daytime hours.",
+        notes: "Grand 18th-century palace with one of Naples’ most impressive staircases, less visited than famous counterparts.",
+        link: null
+      },
+      {
+        id: "it-17",
+        num: 17,
+        name: "Chiesa della Santissima Trinità degli Spagnoli",
+        subArea: "Spanish Quarter",
+        address: "Spanish Quarter",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Morning & late afternoon hours",
+        restrictionSummary: "Closed midday; respectful church dress",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "General Admission", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closes for midday break; modest dress expected.",
+        notes: "The Quarter’s main church, built by the Spanish in 1573 with striking baroque interiors.",
+        link: null
+      },
+      {
+        id: "it-18",
+        num: 18,
+        name: "Largo Baracche",
+        subArea: "Spanish Quarter",
+        address: "Spanish Quarter",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free public square",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Public Square",
+        restrictionSummary: "None (open public viewpoint)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Viewpoint", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Open public piazza with no restrictions.",
+        notes: "Panoramic viewpoint offering vistas over the Bay of Naples and Castel Sant’Elmo.",
+        link: null
+      },
+      {
+        id: "it-19",
+        num: 19,
+        name: "Maradona Murals",
+        subArea: "Spanish Quarter",
+        address: "Via Emanuele De Deo (Spanish Quarter)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free street shrine",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Street Shrine",
+        restrictionSummary: "None (open pedestrian street)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Open-Air Street Art", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Open public street; busiest on weekends and Napoli match days.",
+        notes: "Famous murals including the three-story portrait shrine to Diego Maradona.",
+        link: null
+      },
+      {
+        id: "it-20",
+        num: 20,
+        name: "Pignasecca Market",
+        subArea: "Spanish Quarter",
+        address: "Spanish Quarter",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free open market",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Mon–Sat ~08:00–14:00 (best in morning)",
+        restrictionSummary: "Stalls pack up early afternoon; closed Sundays",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Market Walk", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Most vibrant between 08:30 and 12:30; stalls wind down by early afternoon.",
+        notes: "Naples’ oldest street market selling fresh seafood and local produce.",
+        link: null
+      },
+      {
+        id: "it-21",
+        num: 21,
+        name: "Galleria Borbonica Underground",
+        subArea: "Spanish Quarter",
+        address: "Via D. Morelli 61 / Vico del Grottone (Spanish Quarter)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€15.00",
+        priceSub: "6–18 & 70+: €10 | <6: Free",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Fri–Sun & Holidays: Standard tours 10:00, 12:00, 15:00, 17:00 (1 hr)",
+        restrictionSummary: "Mandatory online booking; limited Fri–Sun/holiday schedule",
+        leadTime: "Book online days to weeks ahead; operates primarily Fri–Sun & Italian holidays.",
+        admissionBreakdown: [
+          { label: "Adult Standard Tour (1 hr)", price: "€15.00" },
+          { label: "Youth (Ages 6–18) & Seniors (70+)", price: "€10.00" },
+          { label: "Children (Under 6)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Mandatory advance reservation online. Limited weekend/holiday schedule. Cool subterranean temperature (~15°C) and uneven steps; wear closed-toe walking shoes.",
+        notes: "Built in 1853 as royal escape route; reveals WWII bomb shelters & vintage cars. Limited weekend/holiday schedule.",
+        link: null
+      },
+
+      // --- NAPLES: RIONE SANITÀ (22-30) ---
+      {
+        id: "it-22",
+        num: 22,
+        name: "Palazzo dello Spagnolo",
+        subArea: "Rione Sanità",
+        address: "Via Vergini 19 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free courtyard",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daytime courtyard access",
+        restrictionSummary: "Residential courtyard; daytime viewing only",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Courtyard & Double-Ramped Staircase", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Private residential apartments occupy upper floors; remain respectful in the courtyard.",
+        notes: "Baroque palace featuring a spectacular double-ramped monumental staircase.",
+        link: null
+      },
+      {
+        id: "it-23",
+        num: 23,
+        name: "Basilica di Santa Maria della Sanità",
+        subArea: "Rione Sanità",
+        address: "Rione Sanità",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daily ~08:30–12:30, 16:30–19:30",
+        restrictionSummary: "Closed midday; modest church dress",
+        leadTime: "No booking required for basilica (San Gaudioso catacombs below require separate ticket).",
+        admissionBreakdown: [
+          { label: "Basilica Nave", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closes midday 12:30–16:30; cover shoulders and knees.",
+        notes: "Stunning baroque church built atop ancient Christian catacombs; yellow majolica dome.",
+        link: null
+      },
+      {
+        id: "it-24",
+        num: 24,
+        name: "Catacombs of San Gennaro",
+        subArea: "Rione Sanità",
+        address: "Via Capodimonte 13 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€13.00–€15.00",
+        priceSub: "Under 18: €6 | <6: Free",
+        adultPriceEur: 13,
+        isDining: false,
+        hoursSummary: "Mon–Sun 10:00–17:00 (Closed Wednesdays; ~1–2 hr guided tour)",
+        restrictionSummary: "Closed Wednesdays; mandatory guided tour",
+        leadTime: "Book online days to weeks ahead to secure English departure times.",
+        admissionBreakdown: [
+          { label: "Adult Ticket + Guided Tour", price: "€13.00–€15.00" },
+          { label: "Under 18", price: "€6.00" },
+          { label: "Children (Under 6)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Wednesdays. Mandatory guided tour included with ticket; flat, wide subterranean galleries suitable for families.",
+        notes: "Mandatory guided tour included with ticket; book online days to weeks ahead. Contains earliest Christian art in Naples.",
+        link: null
+      },
+      {
+        id: "it-25",
+        num: 25,
+        name: "Fontanelle Cemetery",
+        subArea: "Rione Sanità",
+        address: "Via Fontanelle 80 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€6.00–€8.00",
+        priceSub: "€6 audio / €8 guided",
+        adultPriceEur: 6,
+        isDining: false,
+        hoursSummary: "Thu–Tue 10:00–18:00 (Last entry 17:15; Closed Wednesdays)",
+        restrictionSummary: "Closed Wed; 15-min slots (max 25/group, 40-min max visit)",
+        leadTime: "Online reservation required; reopened April 2026 under strict visitor caps.",
+        admissionBreakdown: [
+          { label: "Adult with Audio Guide", price: "€6.00" },
+          { label: "Adult with Guided Tour", price: "€8.00" }
+        ],
+        restrictionsFull: "Reopened April 2026 with strict capacity caps: 15-minute timed entry slots (max 25 visitors per group, 75 total inside; 40-minute maximum visit duration). Closed Wednesdays.",
+        notes: "Haunting ossuary carved into tufa rock holding remains of victims from Naples' great plagues.",
+        link: null
+      },
+      {
+        id: "it-26",
+        num: 26,
+        name: "Casa di Totò",
+        subArea: "Rione Sanità",
+        address: "Via Santa Maria Antesaecula 109 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free (Exterior only)",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Street Viewing",
+        restrictionSummary: "Exterior plaque only; private residence",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Exterior Plaque Viewing", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Privately owned residence; no interior entry.",
+        notes: "Birthplace of comedian Totò marked with plaque (privately owned; no interior access).",
+        link: null
+      },
+      {
+        id: "it-27",
+        num: 27,
+        name: "Local Sanità Markets",
+        subArea: "Rione Sanità",
+        address: "Via Vergini & Via Sanità (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free street market",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Mon–Sat mornings",
+        restrictionSummary: "Morning hours only; closed Sundays",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Street Market", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Best visited before 13:00 on weekdays/Saturdays.",
+        notes: "Traditional street markets selling local produce.",
+        link: null
+      },
+      {
+        id: "it-28",
+        num: 28,
+        name: "Ipogei dei Cristallini",
+        subArea: "Rione Sanità",
+        address: "Via dei Cristallini 133 (Rione Sanità)",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€12.00–€18.00",
+        priceSub: "Reduced €10/€14 | Ages 8–12: Free",
+        adultPriceEur: 18,
+        isDining: false,
+        hoursSummary: "Tue–Sun 10:00–15:00 (Closed Mondays)",
+        restrictionSummary: "Children under 8 NOT permitted; daily visitor cap; closed Mon",
+        leadTime: "Book timed entry slot online in advance due to strict daily conservation cap.",
+        admissionBreakdown: [
+          { label: "Adult Guided Visit", price: "€18.00" },
+          { label: "Adult Audio Guide Visit", price: "€12.00" },
+          { label: "Reduced (Guided / Audio)", price: "€14.00 / €10.00" },
+          { label: "Children Ages 8–12", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Strict restriction: Children under 8 years old are NOT permitted inside. Daily visitor cap to protect 2,300-year-old Hellenistic Greek wall paintings; timed entry window. Closed Mondays.",
+        notes: "Recently opened 2,300-year-old Greek burial chambers offering a glimpse into Naples’ ancient past.",
+        link: null
+      },
+      {
+        id: "it-29",
+        num: 29,
+        name: "The Holy Mile (Il Miglio Sacro)",
+        subArea: "Rione Sanità",
+        address: "Rione Sanità",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€15.00–€22.00",
+        priceSub: "~€15 IT Sun / ~€22 EN",
+        adultPriceEur: 22,
+        isDining: false,
+        hoursSummary: "Primarily Sunday mornings (~3 hrs)",
+        restrictionSummary: "Scheduled Sunday morning departures; advance booking",
+        leadTime: "Book online in advance for Sunday morning guided route.",
+        admissionBreakdown: [
+          { label: "English Guided Route", price: "~€22.00" },
+          { label: "Italian Sunday Walk", price: "~€15.00" }
+        ],
+        restrictionsFull: "Operates primarily on Sunday mornings (~3-hour guided walking route).",
+        notes: "Curated guided walking route connecting Sanità’s catacombs, basilicas, and palazzi.",
+        link: null
+      },
+      {
+        id: "it-30",
+        num: 30,
+        name: "Cappella dei Bianchi / Museo Jago",
+        subArea: "Rione Sanità",
+        address: "Piazza Sanità / Sant'Aspreno ai Crociferi",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "€10.00",
+        priceSub: "<18, 65+, students, Catacombs: €8",
+        adultPriceEur: 10,
+        isDining: false,
+        hoursSummary: "Veiled Son: Daily 10:00–14:00 (last entry 13:30); Museum Fri–Sun also 15:00–19:00",
+        restrictionSummary: "Early 14:00 closing Mon–Thu for Veiled Son chapel",
+        leadTime: "Tickets available on-site or online; keep Catacombs ticket for €8 reduced rate.",
+        admissionBreakdown: [
+          { label: "Adult Admission", price: "€10.00" },
+          { label: "Reduced (<18, 65+, Students, Catacombs Ticket Holders)", price: "€8.00" }
+        ],
+        restrictionsFull: "Note early 14:00 closing (last entry 13:30) on Mon–Thu for Cappella dei Bianchi; Fri–Sun adds 15:00–19:00 afternoon window.",
+        notes: "Houses Jago’s contemporary 'Veiled Son' marble sculpture; creating dialogue with historic Veiled Christ.",
+        link: null
+      },
+
+      // --- NAPLES: UNDERGROUND, MUSEUMS & SACRED SPACES (31-38) ---
+      {
+        id: "it-31",
+        num: 31,
+        name: "Napoli Sotterranea",
+        subArea: "Underground & Museums",
+        address: "Piazza San Gaetano 68",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€10.00–€15.00",
+        priceSub: "€10 door / ~€15 online | 5–17: €8 | <5: Free",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Daily 10:00–18:00 (English tours every ~2 hrs; ~75 min)",
+        restrictionSummary: "Book online for English slot; narrow candlelit aqueduct passages",
+        leadTime: "Book online in advance to lock in an English-language departure slot without piazza lines.",
+        admissionBreakdown: [
+          { label: "Adult Online Skip-the-Line / Door", price: "~€15.00 / €10.00" },
+          { label: "Youth (Ages 5–17)", price: "€8.00" },
+          { label: "Children (Under 5)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Guided tours run at fixed language intervals (English ~every 2 hrs). Includes narrow Greco-Roman aqueduct tunnels (optional bypass available for claustrophobic visitors).",
+        notes: "Was a WWII bunker, has route to see Roman aqueducts and Greco-Roman theatre.",
+        link: null
+      },
+      {
+        id: "it-32",
+        num: 32,
+        name: "Archaeological Museum (MANN)",
+        subArea: "Underground & Museums",
+        address: "Piazza Museo 19",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€20.00",
+        priceSub: "EU 18–25: €2 | <18: Free | 1st Sun: Free",
+        adultPriceEur: 20,
+        isDining: false,
+        hoursSummary: "Wed–Mon 09:00–19:30 (Last entry 18:30; Closed Tuesdays)",
+        restrictionSummary: "Closed Tuesdays; large bags checked in free cloakroom",
+        leadTime: "Rarely sells out; buy online a few days ahead or walk up.",
+        admissionBreakdown: [
+          { label: "Adult General Admission", price: "€20.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18 & 1st Sunday of Month", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Tuesdays. Free admission on the 1st Sunday of every month (Domenica al Museo).",
+        notes: "Houses major mosaics and finds from Pompeii & Herculaneum, doomed cities from the 79 AD eruption of Vesuvius.",
+        link: null
+      },
+      {
+        id: "it-33",
+        num: 33,
+        name: "Palazzo Reale",
+        subArea: "Underground & Museums",
+        address: "Piazza del Plebiscito 1",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€15.00",
+        priceSub: "EU 18–24: €2 | <18: Free | Evening: €5",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Thu–Tue 09:00–20:00 (Last entry 19:00; Closed Wednesdays)",
+        restrictionSummary: "Closed Wednesdays; book ahead for guided library tours",
+        leadTime: "Walk-in general tickets easy; reserve guided apartment/library tours in advance.",
+        admissionBreakdown: [
+          { label: "Adult Royal Apartments", price: "€15.00" },
+          { label: "EU Citizens (Ages 18–24)", price: "€2.00" },
+          { label: "Special Evening Openings", price: "€5.00" },
+          { label: "Under 18", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Wednesdays. Last entry 1 hour before closing.",
+        notes: "The royal palace. Should book tickets for guided historical libraries & royal apartment tours.",
+        link: "https://www.getyourguide.com/naples-l162/naples-discovering-the-historical-libraries-in-the-centre-t435765/?ranking_uuid=033812f1-3f6b-4e4e-8de8-36698d51b615&referral_redirect=1&q=Naples"
+      },
+      {
+        id: "it-34",
+        num: 34,
+        name: "Museo di Capodimonte",
+        subArea: "Underground & Museums",
+        address: "Via Miano 2",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "€15.00",
+        priceSub: "EU 18–25: €2 | <18: Free | Park: Free",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Thu–Tue 08:30–19:30 (Last entry 18:30; Closed Wednesdays)",
+        restrictionSummary: "Closed Wednesdays; ticket valid all day for re-entry",
+        leadTime: "Spacious museum; tickets easily bought on-site or a couple days ahead.",
+        admissionBreakdown: [
+          { label: "Adult Museum Ticket (All-day re-entry)", price: "€15.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18 & Real Bosco Park", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Wednesdays. Same-day museum ticket allows re-entry so you can break for lunch in the park.",
+        notes: "Started as a royal hunting lodge — now one of Italy's finest art museums.",
+        link: null
+      },
+      {
+        id: "it-35",
+        num: 35,
+        name: "Sansevero Chapel Museum (Veiled Christ)",
+        subArea: "Underground & Museums",
+        address: "Via Francesco de Sanctis 19",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€12.00",
+        priceSub: "18–26: €8 | 10–17: €6 | <10: Free | Audio: €3.50",
+        adultPriceEur: 12,
+        isDining: false,
+        hoursSummary: "Wed–Mon 09:00–19:00 (Last entry 18:30; Closed Tuesdays)",
+        restrictionSummary: "Closed Tue; strictly timed entry; NO photography allowed",
+        leadTime: "Mandatory online booking opens ~60 days out and sells out weeks prior.",
+        admissionBreakdown: [
+          { label: "Adult Admission", price: "€12.00" },
+          { label: "Youth (Ages 18–26)", price: "€8.00" },
+          { label: "Children (Ages 10–17)", price: "€6.00" },
+          { label: "Children (Under 10)", price: "€0.00 (Free)" },
+          { label: "Optional Audio Guide", price: "€3.50" }
+        ],
+        restrictionsFull: "Mandatory advance online booking; same-day standby tickets rarely offered. Closed Tuesdays. Strict prohibition on photography and video inside the chapel.",
+        notes: "Home to Giuseppe Sanmartino's 'Veiled Christ' sculpture. €12.00 admission.",
+        link: null
+      },
+      {
+        id: "it-36",
+        num: 36,
+        name: "Naples Cathedral (Duomo) & Treasure of San Gennaro",
+        subArea: "Naples' Sacred Spaces",
+        address: "Via Duomo 147–149",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €15.00",
+        priceSub: "Cathedral: Free | Treasury: €15 (Fam 3: €30; <12: Free)",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Daily 08:30–13:30, 14:30–19:00 (Treasury Museum 09:30–18:00)",
+        restrictionSummary: "Modest church dress code; €5–€15 door tickets for crypt/treasury",
+        leadTime: "No advance booking required; tickets available at the door.",
+        admissionBreakdown: [
+          { label: "Cathedral Nave & 4th-c. Baptistery", price: "€0.00 (Free)" },
+          { label: "Adjacent Treasury Museum (incl. audio guide)", price: "€15.00" },
+          { label: "Treasury Family Ticket (3 people)", price: "€30.00" },
+          { label: "Local Chapel / Door Ticket Option", price: "€5.00" },
+          { label: "Children Under 12 (Treasury)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Cover shoulders and knees inside the 13th-century cathedral. Cathedral closes midday 13:30–14:30.",
+        notes: "13th-century cathedral (Cattedrale di Santa Maria Assunta); tickets available at the door (€5 local / €15 Treasury Museum).",
+        link: null
+      },
+      {
+        id: "it-37",
+        num: 37,
+        name: "Gesù Nuovo",
+        subArea: "Naples' Sacred Spaces",
+        address: "Piazza del Gesù Nuovo",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daily ~07:30–13:00, 16:00–19:30",
+        restrictionSummary: "Closed midday; modest church attire",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "General Admission", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed during afternoon break (~13:00–16:00); cover shoulders and knees.",
+        notes: "Free admission; iconic rusticated volcanic-stone facade with gilded baroque interior.",
+        link: null
+      },
+      {
+        id: "it-38",
+        num: 38,
+        name: "Basilica San Domenico Maggiore",
+        subArea: "Naples' Sacred Spaces",
+        address: "Piazza San Domenico Maggiore",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daily ~07:30–12:00, 16:30–19:00",
+        restrictionSummary: "Closed midday; modest church attire",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Main Basilica Admission", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed during afternoon break (~12:00–16:30); modest attire required.",
+        notes: "Free admission to main Gothic/Baroque basilica.",
+        link: null
+      },
+
+      // --- NAPLES: SHOPPING & HERITAGE (39-42) ---
+      {
+        id: "it-39",
+        num: 39,
+        name: "Via Toledo",
+        subArea: "Shopping Areas",
+        address: "Central Naples",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free public street",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Open street (shops ~10:00–20:00)",
+        restrictionSummary: "None (open pedestrian shopping avenue)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Street Access", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Main shopping street since 1536 — mixes contemporary street shops with traditional fashion houses and quality menswear at a good value.",
+        link: null
+      },
+      {
+        id: "it-40",
+        num: 40,
+        name: "Galleria Umberto I",
+        subArea: "Shopping Areas",
+        address: "Via San Carlo",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free public arcade",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Arcade",
+        restrictionSummary: "None (public covered gallery)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Gallery Access", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "19th-century shopping gallery with stunning glass-and-iron architecture.",
+        link: null
+      },
+      {
+        id: "it-41",
+        num: 41,
+        name: "Via San Gregorio Armeno (Christmas Alley)",
+        subArea: "Shopping Areas",
+        address: "Historic Center",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free public alley",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Open street (workshops ~09:30–19:30)",
+        restrictionSummary: "Very narrow pedestrian lane; crowded midday",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Street Access", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Narrow one-way pedestrian flow during busy weekends and November/December.",
+        notes: "Very craft-heavy shopping district famous for artisan nativity (presepe) workshops.",
+        link: null
+      },
+      {
+        id: "it-42",
+        num: 42,
+        name: "Bourbon Legacy Architecture",
+        subArea: "Historic Heritage",
+        address: "Historic Naples",
+        region: "naples",
+        regionLabel: "Naples",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free exteriors",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Public streets & exteriors",
+        restrictionSummary: "None (architectural walking route)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Monuments & Exteriors", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Beautiful buildings created by the Spanish to transform Naples into a capital matching their ambitions.",
+        link: null
+      },
+
+      // --- DAY TRIPS & TOURS FROM NAPLES (43-45) ---
+      {
+        id: "it-43",
+        num: 43,
+        name: "Pompeii Archaeological Park",
+        subArea: "Day Trips & Tours",
+        address: "Pompei",
+        region: "daytrips",
+        regionLabel: "Day Trips",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€25.00–€30.00",
+        priceSub: "Express €25 / Plus €30 | EU 18–25: €2 | <18: Free",
+        adultPriceEur: 25,
+        isDining: false,
+        hoursSummary: "Mar 16–Oct 14: 09:00–19:00 (last 17:30); Oct 15–Mar 15: 09:00–17:00 (last 15:30)",
+        restrictionSummary: "2026 Rules: 20k daily cap; named tickets + ID; no re-entry",
+        leadTime: "Book small-group guided tours weeks ahead; site tickets enforce daily caps.",
+        admissionBreakdown: [
+          { label: "Pompeii Express (Main Ancient City)", price: "€25.00" },
+          { label: "Pompeii Plus (Includes Suburban Villas)", price: "€30.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "2026 Rules: Daily cap of 20,000 visitors (15,000 morning / 5,000 afternoon); named personalized tickets require passport/ID at turnstiles; single entry only (no re-entry). No large backpacks (>30×30×15 cm).",
+        notes: "Highly recommended small group tour via Walks of Italy.",
+        link: "https://www.walksofitaly.com/pompeii-tours/best-of-pompeii-tour/"
+      },
+      {
+        id: "it-44",
+        num: 44,
+        name: "Herculaneum Archaeological Park",
+        subArea: "Day Trips & Tours",
+        address: "Ercolano",
+        region: "daytrips",
+        regionLabel: "Day Trips",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€16.00",
+        priceSub: "EU 18–25: €2 | <18: Free | Tours ~$56–$75",
+        adultPriceEur: 16,
+        isDining: false,
+        hoursSummary: "Mar 16–Oct 14: 08:30–19:30 (last 18:00); Oct 15–Mar 15: 08:30–17:00 (last 15:30)",
+        restrictionSummary: "Last entry 90 min before close; book archaeologist tour ahead",
+        leadTime: "Book skip-the-line guided tour with archaeologist weeks in advance.",
+        admissionBreakdown: [
+          { label: "Site General Admission", price: "€16.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18 & 1st Sunday of Month", price: "€0.00 (Free)" },
+          { label: "Guided Archaeologist Tour (Optional)", price: "~$56–$75" }
+        ],
+        restrictionsFull: "Last entry 1.5 hours prior to closing; check large bags at entrance cloakroom.",
+        notes: "Better preserved than Pompeii with multi-story wooden structures; highly recommended guided tour with archaeologist.",
+        link: "https://www.getyourguide.com/naples-l162/herculaneum-skip-the-line-guided-tour-with-archaeologist-t204331/?ranking_uuid=97c9884f-94f2-4b6e-9558-abf865cd3660&referral_redirect=1"
+      },
+      {
+        id: "it-45",
+        num: 45,
+        name: "Pizza and Tiramisu Cooking Class",
+        subArea: "Culinary Experience",
+        address: "Naples",
+        region: "daytrips",
+        regionLabel: "Day Trips",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "~€60–€85",
+        priceSub: "~$65–$90 per person",
+        adultPriceEur: 70,
+        isDining: false,
+        hoursSummary: "Scheduled morning & afternoon sessions (~2.5–3 hrs)",
+        restrictionSummary: "Hard small-group attendee cap; advance reservation required",
+        leadTime: "Reserve online weeks ahead; small group sizes sell out quickly.",
+        admissionBreakdown: [
+          { label: "Per Participant (Includes meal & drinks)", price: "~€60.00–€85.00 (~$65–$90)" }
+        ],
+        restrictionsFull: "Strict class size cap; notify operator of any food allergies at booking.",
+        notes: "Hands-on Pizza and Tiramisu cooking experience in Naples.",
+        link: "https://www.viator.com/tours/Naples/Pizza-making-experience-in-NAPLES/d508-162012P5?dd_referrer=https%3A%2F%2Fwww.viator.com%2FNaples%2Fd508-ttd%2Fp-162012P5%3Fpid%3DP00056924%26mcid%3D42383%26medium%3Dlink%26campaign%3Dthings-to-do-in-naples-italy"
+      },
+
+      // --- SORRENTO & AMALFI COAST (46-64) ---
+      {
+        id: "it-46",
+        num: 46,
+        name: "Corso Italia & Via San Cesareo",
+        subArea: "Sorrento",
+        address: "Sorrento",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free pedestrian streets",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Open pedestrian streets",
+        restrictionSummary: "None (pedestrianized evening passeggiata)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Pedestrian Promenade", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Main shopping streets in Sorrento; known for lemons and Limoncello tastings.",
+        link: null
+      },
+      {
+        id: "it-47",
+        num: 47,
+        name: "Path of the Gods (Sentiero degli Dei)",
+        subArea: "Amalfi Coast Trails",
+        address: "Bomerano (Agerola) to Nocelle/Positano",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free trail",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daylight hours (start before 09:30 in warm months)",
+        restrictionSummary: "Exposed cliffside terrain; sturdy shoes & water required",
+        leadTime: "No permit or booking needed.",
+        admissionBreakdown: [
+          { label: "Public Hiking Trail", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Unshaded cliffside trail (~7.8 km) ending with ~1,700 stone stairs down from Nocelle to Positano. Start early before midday heat.",
+        notes: "Iconic cliffside hike; no permit needed. Great for Mom/hikers while others scooter along the coast.",
+        link: null
+      },
+      {
+        id: "it-48",
+        num: 48,
+        name: "Path of Lemons (Sentiero dei Limoni)",
+        subArea: "Amalfi Coast Trails",
+        address: "Maiori to Minori",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free trail",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daylight hours (~1 hr walk)",
+        restrictionSummary: "Stepped hillside path; free open access",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Lemon Grove Trail", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Stone stairways linking Maiori and Minori through working lemon terraces.",
+        notes: "Scenic paved stair trail through lemon groves connecting Maiori and Minori.",
+        link: null
+      },
+      {
+        id: "it-49",
+        num: 49,
+        name: "Amalfi Town Center & Marina",
+        subArea: "Amalfi",
+        address: "Amalfi",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Luna Rossa garage ~€3–€5/hr",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "Paid underground parking at Luna Rossa (~€3–€5/hr)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Town & Marina Walk", price: "€0.00 (Free)" },
+          { label: "Parking: Underground Luna Rossa", price: "~€3.00–€5.00/hr" }
+        ],
+        restrictionsFull: "Limited coastal parking; use underground Luna Rossa rock garage.",
+        notes: "Underground Luna Rossa parking; try Delizia al Limone, sfogliatella pastry, and lemon sorbet.",
+        link: null
+      },
+      {
+        id: "it-50",
+        num: 50,
+        name: "Amalfi Cathedral (Duomo di Sant'Andrea) & Cloister",
+        subArea: "Amalfi",
+        address: "Amalfi",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €3.00–€4.00",
+        priceSub: "Church: Free | Cloister: €3–4 (65+: €2; <18: €1)",
+        adultPriceEur: 4,
+        isDining: false,
+        hoursSummary: "Mar–Oct: 09:00–19:45; Nov–Feb: 10:00–16:30/17:00",
+        restrictionSummary: "Door ticket only (no online sales); strict dress code",
+        leadTime: "Buy ticket directly at the door on arrival (no standalone online tickets).",
+        admissionBreakdown: [
+          { label: "Cathedral Nave", price: "€0.00 (Free)" },
+          { label: "Cloister of Paradise, Crypt & Museum", price: "€3.00–€4.00" },
+          { label: "Seniors (65+)", price: "€2.00" },
+          { label: "Youth (Under 18)", price: "€1.00" }
+        ],
+        restrictionsFull: "Strict church dress code enforced at top of stairs (covered shoulders and knees required).",
+        notes: "Has a great 'Cloister of Paradise' attached to it.",
+        link: null
+      },
+      {
+        id: "it-51",
+        num: 51,
+        name: "Municipal Museum (Museo della Bussola)",
+        subArea: "Amalfi",
+        address: "Amalfi (Arsenal)",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "~€3.00–€5.00",
+        priceSub: "Nominal local entry",
+        adultPriceEur: 4,
+        isDining: false,
+        hoursSummary: "Tue–Sun ~10:00–13:00, 16:00–19:00 (seasonal)",
+        restrictionSummary: "Closed Mondays & afternoon break; pay at door",
+        leadTime: "No advance booking needed; purchase at entrance.",
+        admissionBreakdown: [
+          { label: "Adult Museum Ticket", price: "~€3.00–€5.00" }
+        ],
+        restrictionsFull: "Closed Mondays and midday break (13:00–16:00).",
+        notes: "Houses the medieval maritime code (Tavole Amalfitane).",
+        link: null
+      },
+      {
+        id: "it-52",
+        num: 52,
+        name: "Atrani Town & Pedestrian Rock Tunnel",
+        subArea: "Atrani",
+        address: "Atrani",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free town & tunnel",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "None (lit pedestrian rock walkway from Amalfi)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Pedestrian Tunnel & Village", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None; 5-minute safe walk through pedestrian tunnel from Amalfi Luna Rossa area.",
+        notes: "Can walk from Amalfi via a pedestrian tunnel carved into a rock; built on the side of a mountain.",
+        link: null
+      },
+      {
+        id: "it-53",
+        num: 53,
+        name: "Torre dello Ziro Hike",
+        subArea: "Atrani",
+        address: "Above Atrani / Pontone",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free trail & tower",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Daylight hours",
+        restrictionSummary: "Steep stair climb; daylight hiking only",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Watchtower Trail", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Steep stone steps from Atrani or easier trail access from Pontone.",
+        notes: "Hike to Torre dello Ziro watchtower overlooking Amalfi and Atrani.",
+        link: null
+      },
+      {
+        id: "it-54",
+        num: 54,
+        name: "Ravello Town Center",
+        subArea: "Ravello",
+        address: "Ravello",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free town access",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "None (hilltop pedestrian village)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Piazza Duomo & Belvederes", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Hilltop 'City of Music' above Amalfi.",
+        link: null
+      },
+      {
+        id: "it-55",
+        num: 55,
+        name: "Villa Cimbrone",
+        subArea: "Ravello",
+        address: "Via S. Chiara 26, Ravello",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "€10.00",
+        priceSub: "Buy at gate",
+        adultPriceEur: 10,
+        isDining: false,
+        hoursSummary: "Daily 09:00 to sunset",
+        restrictionSummary: "Purchase directly at garden gate; ~10-min pedestrian walk",
+        leadTime: "No advance booking required; tickets sold directly at the gate.",
+        admissionBreakdown: [
+          { label: "Gardens & Terrace of Infinity", price: "€10.00" }
+        ],
+        restrictionsFull: "Accessible only on foot via scenic stepped lanes from Ravello's main square (~10 min walk).",
+        notes: "Terrace of Infinity — great views and statues; cloister, a temple, and cliffside gardens.",
+        link: null
+      },
+      {
+        id: "it-56",
+        num: 56,
+        name: "Positano Town & Boutiques",
+        subArea: "Positano",
+        address: "Positano",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free town & beaches",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "Steep pedestrian stairways throughout village",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Streets & Spiaggia Grande", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Vertical pedestrian-only stairways connect upper road to beach.",
+        notes: "Vertical cliffside village, beaches, and boutique shopping.",
+        link: null
+      },
+      {
+        id: "it-57",
+        num: 57,
+        name: "Chiesa di Santa Maria Assunta & MAR Roman Villa",
+        subArea: "Positano",
+        address: "Positano",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Advance Recommended",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €15.00",
+        priceSub: "Church: Free | MAR Roman Villa: €15",
+        adultPriceEur: 15,
+        isDining: false,
+        hoursSummary: "Apr 1–Oct 31: 09:00–21:00; Nov 1–Mar 30: 10:00–16:00",
+        restrictionSummary: "MAR Villa: timed guided entry every 30 min; church dress code",
+        leadTime: "Book MAR Roman Villa time slot ahead in summer; church is free walk-in.",
+        admissionBreakdown: [
+          { label: "Chiesa di Santa Maria Assunta", price: "€0.00 (Free)" },
+          { label: "MAR Roman Villa Underground (Timed Guided)", price: "€15.00" }
+        ],
+        restrictionsFull: "Timed guided entry every 30 minutes into the frescoed 1st-century Roman villa beneath the church; modest dress for church.",
+        notes: "Iconic tiled dome church with a frescoed Roman Villa hidden below.",
+        link: null
+      },
+      {
+        id: "it-58",
+        num: 58,
+        name: "Praiano Town & Trailheads",
+        subArea: "Praiano",
+        address: "Praiano",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free town & trails",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "None",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Village & Trailheads", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Fewer tourists; great sunset views and lower trailhead connection to Path of the Gods.",
+        link: null
+      },
+      {
+        id: "it-59",
+        num: 59,
+        name: "Vietri sul Mare & Corso Umberto I",
+        subArea: "Vietri sul Mare",
+        address: "Vietri sul Mare",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free shopping street",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open (ceramic shops ~09:30–13:30, 16:30–20:00)",
+        restrictionSummary: "Ceramic boutiques close midday 13:30–16:30",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Corso Umberto I Ceramics Street", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Shops close for afternoon siesta (~13:30–16:30).",
+        notes: "Gateway to the Amalfi Coast and ceramic capital of the coast.",
+        link: null
+      },
+      {
+        id: "it-60",
+        num: 60,
+        name: "Church of San Giovanni Battista",
+        subArea: "Vietri sul Mare",
+        address: "Vietri sul Mare",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free admission",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Morning & late afternoon hours",
+        restrictionSummary: "Closed midday; modest church attire",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Church Admission", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Modest attire required.",
+        notes: "Town's centerpiece church with iconic majolica-tiled dome.",
+        link: null
+      },
+      {
+        id: "it-61",
+        num: 61,
+        name: "Maiori Town & Beach Promenade",
+        subArea: "Maiori",
+        address: "Maiori",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free promenade",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open",
+        restrictionSummary: "None (private beach clubs charge separately if rented)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Town & Promenade", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Longest sandy beach on the coast; starting point of Path of Lemons and great exploration base.",
+        link: null
+      },
+      {
+        id: "it-62",
+        num: 62,
+        name: "Castello di San Nicola de Thoro-Plano",
+        subArea: "Maiori",
+        address: "Maiori (Inland hill)",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "~€3.00–€5.00",
+        priceSub: "Exterior trail free",
+        adultPriceEur: 4,
+        isDining: false,
+        hoursSummary: "Seasonal / weekend hours (uphill footpath)",
+        restrictionSummary: "Uphill footpath; interior open seasonally/weekends",
+        leadTime: "No advance booking; pay on arrival when open.",
+        admissionBreakdown: [
+          { label: "Castle Interior (When open)", price: "~€3.00–€5.00" },
+          { label: "Exterior Trail & Grounds", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Reached via uphill pedestrian path; check local opening times in town.",
+        notes: "9th-century hilltop fortification inland above Maiori.",
+        link: null
+      },
+      {
+        id: "it-63",
+        num: 63,
+        name: "Minori Town Center & Pasticceria Sal De Riso",
+        subArea: "Minori",
+        address: "Minori",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Town free; bakery à la carte",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Sal De Riso open daily ~07:30–23:00",
+        restrictionSummary: "Walk-in bakery counter & waterfront terrace",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Minori Town Center", price: "€0.00 (Free)" },
+          { label: "Pastries & Gelato at Sal De Riso", price: "À la carte (~€4–€8)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "'City of Taste' famous for pasta, lemons, and Sal De Riso's Delizia al Limone.",
+        link: null
+      },
+      {
+        id: "it-64",
+        num: 64,
+        name: "Villa Romana e Antiquarium",
+        subArea: "Minori",
+        address: "Via dei Patrizi 28, Minori",
+        region: "amalfi",
+        regionLabel: "Sorrento & Amalfi",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "€0.00–€2.00",
+        priceSub: "Check 2026 restoration status",
+        adultPriceEur: 2,
+        isDining: false,
+        hoursSummary: "Temporarily closed / TBD hours in 2026",
+        restrictionSummary: "Verify 2026 restoration reopening locally before visiting",
+        leadTime: "No advance booking; verify local opening status.",
+        admissionBreakdown: [
+          { label: "Nominal / Free State Site Entry", price: "€0.00–€2.00" }
+        ],
+        restrictionsFull: "Temporarily closed for conservation/restoration work in 2026; check locally in Minori before walking over.",
+        notes: "1st-century seaside Roman villa with mosaics and small museum.",
+        link: null
+      },
+
+      // --- ROME: ATTRACTIONS (65-78) ---
+      {
+        id: "it-65",
+        num: 65,
+        name: "The Colosseum, Roman Forum & Palatine Hill",
+        subArea: "Rome Attractions",
+        address: "Piazza del Colosseo",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€18.00–€24.00",
+        priceSub: "Std €18 / Full €24 | EU 18–25: €2 | <18: Free",
+        adultPriceEur: 18,
+        isDining: false,
+        hoursSummary: "Mar–Oct 24: 08:30–18:30 (last 17:30); Oct 25–Feb: 08:30–16:30 (last 15:30)",
+        restrictionSummary: "Named tickets + passport/ID; 15-min slot window; max bag 30×40×15cm",
+        leadTime: "Releases exactly 30 days ahead; Full Experience (Arena/Underground) sells out within minutes.",
+        admissionBreakdown: [
+          { label: "24h Standard (Colosseum + Forum + Palatine)", price: "€18.00" },
+          { label: "Full Experience (Includes Arena Floor or Underground)", price: "€24.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18 (Must still reserve €0 timed ticket)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "2026 Rules: Named personalized tickets require original passport or national ID at security gate. Strict 15-minute arrival window for Colosseum timed slot. No bags larger than 30×40×15 cm (no luggage storage on-site).",
+        notes: "Mandatory timed entry; combined ticket includes Roman Forum and Palatine Hill.",
+        link: null
+      },
+      {
+        id: "it-66",
+        num: 66,
+        name: "The Vatican Museums & Sistine Chapel",
+        subArea: "Rome Attractions",
+        address: "Viale Vaticano",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€25.00",
+        priceSub: "€20 + €5 fee | 7–18/Students: €15 | <7: Free",
+        adultPriceEur: 25,
+        isDining: false,
+        hoursSummary: "Mon–Sat 08:00–19:00 (Last entry 17:00; Closed Sun except last Sun)",
+        restrictionSummary: "Closed Sundays (except last Sun); shoulders/knees covered; no Sistine photos",
+        leadTime: "Sells out 1–2 months ahead; book timed entry directly on official Vatican portal.",
+        admissionBreakdown: [
+          { label: "Adult Online Timed Ticket (€20 + €5 booking fee)", price: "€25.00" },
+          { label: "Reduced (Ages 7–18 & Students up to 25 with ID)", price: "€15.00 (€10 + €5)" },
+          { label: "Children (Under 7)", price: "€0.00 (Free)" },
+          { label: "Last Sunday of Month (09:00–14:00, no advance booking)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Strict dress code: shoulders and knees must be covered for all visitors. Absolute silence and NO photography/video inside the Sistine Chapel. Closed Sundays (except free final Sunday of each month).",
+        notes: "High sell-out risk; timed entry essential to avoid multi-hour standby lines.",
+        link: null
+      },
+      {
+        id: "it-67",
+        num: 67,
+        name: "St. Peter's Basilica & Dome Climb",
+        subArea: "Rome Attractions",
+        address: "Piazza San Pietro",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €10–€15",
+        priceSub: "Basilica: Free | Dome: €10 stairs / €15 elevator",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Basilica 07:00–19:10; Dome 07:30–18:00 (17:00 winter)",
+        restrictionSummary: "Airport-style security queue; strict dress code; Dome ticket on-site",
+        leadTime: "No ticket needed for Basilica (arrive 07:30–08:00 AM to beat lines); Dome ticket bought on-site.",
+        admissionBreakdown: [
+          { label: "St. Peter's Basilica Main Nave", price: "€0.00 (Free)" },
+          { label: "Cupola / Dome Climb (All 551 stairs)", price: "€10.00" },
+          { label: "Cupola / Dome (Elevator + 320 stairs)", price: "€15.00" }
+        ],
+        restrictionsFull: "Strict dress code enforced at security (shoulders and knees covered; no hats). Arrive by 07:30–08:00 AM to avoid 60–90 minute square security lines.",
+        notes: "Main church is free (security line); dome climb is paid on-site.",
+        link: null
+      },
+      {
+        id: "it-68",
+        num: 68,
+        name: "Trevi Fountain",
+        subArea: "Rome Attractions",
+        address: "Piazza di Trevi",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €2.00",
+        priceSub: "Piazza: Free | Basin Edge: €2 (2026 rule)",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Basin fee 09:00–22:00 (11:30–22:00 Mon/Fri); free after 22:00 & from square",
+        restrictionSummary: "2026 Rule: €2 fee to step down to water's edge; piazza viewing free",
+        leadTime: "No booking required; pay €2 at perimeter if descending to basin.",
+        admissionBreakdown: [
+          { label: "Viewing from Piazza di Trevi", price: "€0.00 (Free)" },
+          { label: "Stepping Down to Basin Perimeter (09:00–22:00)", price: "€2.00" },
+          { label: "Basin Perimeter After 22:00 & Before 09:00", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "2026 Update: Viewing from the upper piazza is always free; stepping down the stone steps to the water's edge requires a €2 timed/queue ticket during daytime/evening hours.",
+        notes: "Public fountain monument; coin toss tradition.",
+        link: null
+      },
+      {
+        id: "it-69",
+        num: 69,
+        name: "The Pantheon",
+        subArea: "Rome Attractions",
+        address: "Piazza della Rotonda",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€7.00",
+        priceSub: "EU 18–25: €2 | <18: Free | 1st Sun: Free",
+        adultPriceEur: 7,
+        isDining: false,
+        hoursSummary: "Daily 09:00–19:00 (Last entry 18:30; closed to tourists during Mass)",
+        restrictionSummary: "Modest dress code; closed to tourists during religious services",
+        leadTime: "Book timed slot online via official Musei Italiani portal to skip plaza queues.",
+        admissionBreakdown: [
+          { label: "Adult Entry Ticket (2026 rate)", price: "€7.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€2.00" },
+          { label: "Under 18 & 1st Sunday of Month", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Ticket price updated to €7.00 in July 2026. Modest dress code required (shoulders/knees covered). Closed to sightseeing during Saturday afternoon / Sunday morning Mass.",
+        notes: "Online booking recommended via Musei Italiani to skip lines.",
+        link: null
+      },
+      {
+        id: "it-70",
+        num: 70,
+        name: "The Spanish Steps",
+        subArea: "Rome Attractions",
+        address: "Piazza di Spagna",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free monument",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Monument",
+        restrictionSummary: "Sitting or eating on the marble steps is strictly prohibited",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Monument", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Municipal ordinance prohibits sitting, picnicking, or resting luggage on the marble steps (enforced by police whistles/fines).",
+        notes: "Public monument connecting Piazza di Spagna and Trinità dei Monti.",
+        link: null
+      },
+      {
+        id: "it-71",
+        num: 71,
+        name: "Testaccio Market",
+        subArea: "Rome Attractions",
+        address: "Via Aldo Manuzio",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free entry; pay per stall",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "Mon–Sat 07:00–15:30 (Closed Sundays)",
+        restrictionSummary: "Closed Sundays & after 15:30; ideal for lunch",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Covered Market Entry", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Sundays; food stalls peak between 11:30 and 14:30.",
+        notes: "Known as the 'stomach of Rome' (pay per food item).",
+        link: null
+      },
+      {
+        id: "it-72",
+        num: 72,
+        name: "The Baths of Caracalla",
+        subArea: "Rome Attractions",
+        address: "Viale delle Terme di Caracalla 52",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Flexible / On-Site",
+        accessTags: ["flexible"],
+        priceDisplay: "€8.00–€10.00",
+        priceSub: "€8 std (€10 exhib.) | EU 18–24: €2 | <18: Free",
+        adultPriceEur: 8,
+        isDining: false,
+        hoursSummary: "Tue–Sun 09:00–16:30 to 19:15 depending on sunset (Closed Mondays)",
+        restrictionSummary: "Closed Mondays; closing time varies seasonally with sunset",
+        leadTime: "Rarely sells out; buy via Musei Italiani or card kiosks at the gate.",
+        admissionBreakdown: [
+          { label: "Adult Admission (€10 during special exhibitions)", price: "€8.00–€10.00" },
+          { label: "EU Citizens (Ages 18–24)", price: "€2.00" },
+          { label: "Under 18 & 1st Sunday of Month", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed Mondays. Closing time shifts seasonally between 16:30 (winter) and 19:15 (summer), with last entry 1 hour prior.",
+        notes: "Vast ancient imperial bath ruins; rarely sells out.",
+        link: null
+      },
+      {
+        id: "it-73",
+        num: 73,
+        name: "Piazza Venezia & Piazza del Popolo",
+        subArea: "Rome Attractions",
+        address: "Central Rome",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free public squares",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Public Squares",
+        restrictionSummary: "None",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Public Squares", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Landmark public squares and monument viewpoints.",
+        link: null
+      },
+      {
+        id: "it-74",
+        num: 74,
+        name: "The Catacombs of Rome (San Callisto / San Sebastiano)",
+        subArea: "Rome Attractions",
+        address: "Via Appia Antica",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€10.00–€15.00",
+        priceSub: "€10 door / €15 online | 7–16/Students: €7 | <7: Free",
+        adultPriceEur: 10,
+        isDining: false,
+        hoursSummary: "San Callisto: Thu–Tue 09:00–12:00, 14:00–17:00 (Closed Wed)",
+        restrictionSummary: "Closed Wed & 12:00–14:00; mandatory guided tour; no photos",
+        leadTime: "Book online a few days ahead to lock in an English departure slot.",
+        admissionBreakdown: [
+          { label: "Adult Ticket at Door / Online", price: "€10.00 / €15.00" },
+          { label: "Reduced (Ages 7–16 & Students)", price: "€7.00" },
+          { label: "Children (Under 7)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "San Callisto closed Wednesdays (San Sebastiano closed Mondays) and closed daily 12:00–14:00. Guided tour required (included in ticket); no photography underground.",
+        notes: "Guided visits through subterranean burial tunnels along the Appian Way.",
+        link: null
+      },
+      {
+        id: "it-75",
+        num: 75,
+        name: "The Basilica of San Clemente",
+        subArea: "Rome Attractions",
+        address: "Piazza di San Clemente",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Advance Recommended",
+        accessTags: ["free", "flexible"],
+        priceDisplay: "€0.00 / €10.00",
+        priceSub: "Upper: Free | Underground: €10 (≤21: €7; <16 w/ parent: Free)",
+        adultPriceEur: 10,
+        isDining: false,
+        hoursSummary: "Mon–Sat 09:00–12:30, 14:00–18:00; Sun 12:00–18:00",
+        restrictionSummary: "Closed midday 12:30–14:00; book timed slot for excavations",
+        leadTime: "Book timed slot online a few days ahead for the subterranean Roman excavations.",
+        admissionBreakdown: [
+          { label: "12th-Century Upper Basilica", price: "€0.00 (Free)" },
+          { label: "Underground Excavations (4th-c. Church & Mithraeum)", price: "€10.00" },
+          { label: "Students (Up to age 21 with ID)", price: "€7.00" },
+          { label: "Children Under 16 (Accompanied by parent)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closed 12:30–14:00 Mon–Sat; Sunday opens at 12:00. Modest church dress code required; no photos in excavations.",
+        notes: "Multilevel excavations descending through three eras of Roman history.",
+        link: null
+      },
+      {
+        id: "it-76",
+        num: 76,
+        name: "Janiculum Hill (Gianicolo)",
+        subArea: "Rome Attractions",
+        address: "Trastevere / Monteverde",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Free Access",
+        accessTags: ["free"],
+        priceDisplay: "€0.00",
+        priceSub: "Free panoramic terrace",
+        adultPriceEur: 0,
+        isDining: false,
+        hoursSummary: "24/7 Open Terrace (Cannon fires daily at 12:00 noon)",
+        restrictionSummary: "None (arrive by 11:45 for daily noon cannon firing)",
+        leadTime: "No booking required.",
+        admissionBreakdown: [
+          { label: "Belvedere Terrace", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "None.",
+        notes: "Some of the best panoramic views of Rome; daily noon cannon shot.",
+        link: null
+      },
+      {
+        id: "it-77",
+        num: 77,
+        name: "Borghese Gallery",
+        subArea: "Rome Attractions",
+        address: "Piazzale Scipione Borghese 5",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Strict Advance",
+        accessTags: ["strict"],
+        priceDisplay: "€18.00",
+        priceSub: "€16+€2 (17:45 slot: €13) | EU 18–25: €4 | <18: €2",
+        adultPriceEur: 18,
+        isDining: false,
+        hoursSummary: "Tue–Sun 09:00–19:00 (Strict 2-hr slots; Closed Mondays)",
+        restrictionSummary: "Mandatory advance booking for ALL (even <18); max 180/slot; closed Mon",
+        leadTime: "Sells out 4–8 weeks ahead; mandatory reservation even for free/reduced visitors.",
+        admissionBreakdown: [
+          { label: "Adult Timed Entry (€16 + €2 mandatory booking fee)", price: "€18.00" },
+          { label: "Last Afternoon Slot (17:45 entry)", price: "€13.00" },
+          { label: "EU Citizens (Ages 18–25)", price: "€4.00 (€2 + €2)" },
+          { label: "Under 18 (Mandatory reservation fee)", price: "€2.00" }
+        ],
+        restrictionsFull: "Mandatory advance reservation for ALL visitors (including under-18s). Strict 2-hour entry windows capped at 180 visitors per slot. Arrive 30 min early to check ALL bags/backpacks at mandatory cloakroom. Closed Mondays.",
+        notes: "One of Rome's finest small museums (Bernini & Caravaggio); strict timed entry.",
+        link: null
+      },
+      {
+        id: "it-78",
+        num: 78,
+        name: "The Capuchin Crypt (Museo e Cripta dei Cappuccini)",
+        subArea: "Rome Attractions",
+        address: "Via Vittorio Veneto 27",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Advance Recommended",
+        accessTags: ["flexible"],
+        priceDisplay: "€10.00–€11.50",
+        priceSub: "€10 door / €11.50 online | <18, 65+, std: €6.50 | <7: Free",
+        adultPriceEur: 10,
+        isDining: false,
+        hoursSummary: "Daily 09:30–13:30, 14:30–18:30 (Closes 1 hr for lunch)",
+        restrictionSummary: "Closed 13:30–14:30; strict dress code; NO photos in bone crypt",
+        leadTime: "Book timed slot online a few days ahead to avoid street wait.",
+        admissionBreakdown: [
+          { label: "Adult at Door / Online Timed", price: "€10.00 / €11.50" },
+          { label: "Reduced (Under 18, 65+, Students)", price: "€6.50" },
+          { label: "Children (Under 7)", price: "€0.00 (Free)" }
+        ],
+        restrictionsFull: "Closes daily 13:30–14:30. Strict religious dress code (shoulders and knees covered) and strictly no photography inside the crypt chapels.",
+        notes: "Crypt decorated with skeletal remains of ~4,000 Capuchin friars.",
+        link: null
+      },
+
+      // --- ROME: DINING & ROOFTOP BARS (79-85) ---
+      {
+        id: "it-79",
+        num: 79,
+        name: "Flavio al Velavevodetto",
+        subArea: "Acclaimed Restaurants",
+        address: "Via di Monte Testaccio 97",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€15–€25",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 12:30–15:00, 19:30–23:00",
+        restrictionSummary: "Book 1–2 weeks ahead for dinner",
+        leadTime: "Reserve online 1–2 weeks in advance.",
+        admissionBreakdown: [
+          { label: "Roman Pasta & Mains (À la carte)", price: "~€15.00–€25.00" }
+        ],
+        restrictionsFull: "Closed between 15:00 and 19:30.",
+        notes: "Best Cacio e pepe and Roman classics carved into Monte Testaccio.",
+        link: null
+      },
+      {
+        id: "it-80",
+        num: 80,
+        name: "Da Enzo al 29",
+        subArea: "Acclaimed Restaurants",
+        address: "Via dei Vascellari 29 (Trastevere)",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€15–€25",
+        priceSub: "À la carte",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Mon–Sat 12:15–15:00, 19:00–23:00 (Closed Sundays)",
+        restrictionSummary: "Walk-in queue only; line forms 30–45 min before opening",
+        leadTime: "No reservations accepted; join sidewalk line 30–45 min before 12:15 or 19:00.",
+        admissionBreakdown: [
+          { label: "Trastevere Trattoria Meal (À la carte)", price: "~€15.00–€25.00" }
+        ],
+        restrictionsFull: "Closed Sundays and between 15:00–19:00. All members of party must be present to be seated.",
+        notes: "Standby line before opening; beloved Trastevere trattoria.",
+        link: null
+      },
+      {
+        id: "it-81",
+        num: 81,
+        name: "Pizzarium Bonci",
+        subArea: "Acclaimed Restaurants",
+        address: "Via della Meloria 43 (Prati)",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Walk-in Queue",
+        accessTags: ["dining"],
+        priceDisplay: "~€8–€15",
+        priceSub: "Paid by weight",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 11:00–22:00",
+        restrictionSummary: "Take numbered ticket outside; standing counter / outdoor tables",
+        leadTime: "Same-day ticket dispenser outside shop.",
+        admissionBreakdown: [
+          { label: "Pizza al Taglio (Sold by weight)", price: "~€8.00–€15.00" }
+        ],
+        restrictionsFull: "Take a paper queue number outside before entering counter.",
+        notes: "Gabriele Bonci's famed pizza al taglio near the Vatican; take a numbered ticket outside.",
+        link: null
+      },
+      {
+        id: "it-82",
+        num: 82,
+        name: "Hotel Raphael (Bramante Terrace)",
+        subArea: "Best Rooftop Bars",
+        address: "Largo Febo 2",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€22–€28",
+        priceSub: "Cocktails / Aperitivo",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Evening aperitivo & dinner hours",
+        restrictionSummary: "Smart casual attire; advance reservation required",
+        leadTime: "Book terrace table days to weeks ahead.",
+        admissionBreakdown: [
+          { label: "Rooftop Cocktails & Aperitivo", price: "~€22.00–€28.00" }
+        ],
+        restrictionsFull: "Smart casual dress expected; advance reservation required for terrace seating.",
+        notes: "360-degree rooftop terrace bar near Piazza Navona.",
+        link: null
+      },
+      {
+        id: "it-83",
+        num: 83,
+        name: "Zuma Rome",
+        subArea: "Best Rooftop Bars",
+        address: "Via della Fontanella di Borghese 48",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€20–€26",
+        priceSub: "Cocktails / Lounge",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daily 12:00–15:00, 18:00–01:00",
+        restrictionSummary: "Reservations required for terrace seating; smart attire",
+        leadTime: "Book online in advance for rooftop lounge seating.",
+        admissionBreakdown: [
+          { label: "Terrace Cocktails", price: "~€20.00–€26.00" }
+        ],
+        restrictionsFull: "Smart evening attire; reserve ahead for Palazzo Fendi rooftop terrace.",
+        notes: "Palazzo Fendi rooftop terrace bar and contemporary Japanese dining.",
+        link: null
+      },
+      {
+        id: "it-84",
+        num: 84,
+        name: "Terrazza Borromini",
+        subArea: "Best Rooftop Bars",
+        address: "Via di Santa Maria dell'Anima 30",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Dining: Reservation",
+        accessTags: ["dining", "strict"],
+        priceDisplay: "~€22–€30",
+        priceSub: "Cocktails / Aperitivo",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Evening aperitivo & dinner hours",
+        restrictionSummary: "High demand; book well in advance for Piazza Navona edge",
+        leadTime: "Reserve 2–4 weeks ahead for sunset aperitivo tables.",
+        admissionBreakdown: [
+          { label: "Aperitivo & Cocktails", price: "~€22.00–€30.00" }
+        ],
+        restrictionsFull: "Smart casual dress; strict reservation requirement for rooftop lounge.",
+        notes: "Direct elevated views overlooking Bernini's Fountain of the Four Rivers in Piazza Navona.",
+        link: null
+      },
+      {
+        id: "it-85",
+        num: 85,
+        name: "Terrazza Caffarelli",
+        subArea: "Best Rooftop Bars",
+        address: "Piazzale Caffarelli 4 (Capitoline Hill)",
+        region: "rome",
+        regionLabel: "Rome",
+        bookingTier: "Advance Recommended",
+        accessTags: ["dining"],
+        priceDisplay: "~€10–€20",
+        priceSub: "Drinks & light snacks",
+        adultPriceEur: 0,
+        isDining: true,
+        hoursSummary: "Daytime & aperitivo hours (follows Capitoline museum schedule)",
+        restrictionSummary: "Follows Capitoline Hill museum schedule; reserve for seated aperitivo",
+        leadTime: "Walk-in friendly for daytime coffee; reserve ahead for seated sunset aperitivo.",
+        admissionBreakdown: [
+          { label: "Coffee, Aperitivo & Light Snacks", price: "~€10.00–€20.00" }
+        ],
+        restrictionsFull: "Accessible without a Capitoline Museum ticket via Caffarelli terrace entrance; closes with museum evening hours.",
+        notes: "Panoramic rooftop terrace on Capitoline Hill.",
+        link: null
+      }
+    ];
+
+    // APPLICATION STATE
+    let state = {
+      region: 'all',
+      access: 'all',
+      search: '',
+      viewMode: 'matrix',
+      shortlistOnly: false,
+      shortlisted: new Set(),
+      activeDrawerId: null
+    };
+
+    const STORAGE_KEY = 'italy_master_matrix_shortlist_v2';
+
+    // PERSISTENCE
+    function loadShortlist() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) {
+            state.shortlisted = new Set(parsed);
+          }
+        }
+      } catch (err) {
+        // Ignore storage errors in restricted environments
+      }
+    }
+
+    function saveShortlist() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify([...state.shortlisted]));
+      } catch (err) {
+        // Ignore storage errors
+      }
+    }
+
+    // TOGGLE SHORTLIST
+    function toggleShortlist(id, event) {
+      if (event) event.stopPropagation();
+      const item = itineraryItems.find(i => i.id === id);
+      if (!item) return;
+
+      if (state.shortlisted.has(id)) {
+        state.shortlisted.delete(id);
+        showStatusToast(`Removed "${item.name}" from shortlist`);
+      } else {
+        state.shortlisted.add(id);
+        showStatusToast(`Added "${item.name}" to shortlist`);
+      }
+      saveShortlist();
+      render();
+      if (state.activeDrawerId === id) {
+        updateDrawerShortlistUI(item);
+      }
+    }
+
+    function toggleShortlistFromDrawer() {
+      if (!state.activeDrawerId) return;
+      toggleShortlist(state.activeDrawerId);
+    }
+
+    // STYLING HELPERS (NO EMOJIS, PURE EDITORIAL PILLS)
+    function renderBookingPill(tier) {
+      switch (tier) {
+        case 'Strict Advance':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-rose-50 text-rose-800 border border-rose-200 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-rose-600"></span>
+                    <span>Strict Advance</span>
+                  </span>`;
+        case 'Advance Recommended':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-amber-50 text-amber-900 border border-amber-200 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-amber-600"></span>
+                    <span>Advance Recommended</span>
+                  </span>`;
+        case 'Flexible / On-Site':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-stone-100 text-stone-800 border border-stone-300 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-stone-500"></span>
+                    <span>Flexible / On-Site</span>
+                  </span>`;
+        case 'Free Access':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-emerald-50 text-emerald-900 border border-emerald-200 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                    <span>Free Access</span>
+                  </span>`;
+        case 'Dining: Reservation':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-semibold bg-orange-50 text-orange-900 border border-orange-200 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-orange-600"></span>
+                    <span>Dining: Reservation</span>
+                  </span>`;
+        case 'Dining: Walk-in Queue':
+          return `<span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-sky-50 text-sky-900 border border-sky-200 whitespace-nowrap">
+                    <span class="w-1.5 h-1.5 rounded-full bg-sky-600"></span>
+                    <span>Dining: Walk-in Queue</span>
+                  </span>`;
+        default:
+          return `<span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-[11px] font-medium bg-paper text-ink border border-hairline whitespace-nowrap">${tier}</span>`;
+      }
+    }
+
+    function renderStarSVG(isStarred) {
+      if (isStarred) {
+        return `<svg class="w-4 h-4 text-amber-600 fill-amber-500" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+      }
+      return `<svg class="w-4 h-4 text-stone-300 group-hover:text-stone-500 transition" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
+    }
+
+    // FILTERING
+    function getFilteredItems() {
+      const q = state.search.trim().toLowerCase();
+
+      return itineraryItems.filter(item => {
+        if (state.shortlistOnly && !state.shortlisted.has(item.id)) {
+          return false;
+        }
+        if (state.region !== 'all' && item.region !== state.region) {
+          return false;
+        }
+        if (state.access !== 'all') {
+          if (!item.accessTags.includes(state.access)) {
+            return false;
+          }
+        }
+        if (q) {
+          const haystack = [
+            item.name,
+            item.subArea,
+            item.address,
+            item.regionLabel,
+            item.bookingTier,
+            item.priceDisplay,
+            item.priceSub,
+            item.hoursSummary,
+            item.restrictionSummary,
+            item.notes
+          ].join(' ').toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    // UPDATE COUNTS & SHORTLIST ESTIMATOR
+    function updateCounters(filteredCount) {
+      document.getElementById('shown-count').textContent = filteredCount;
+      document.getElementById('total-count').textContent = itineraryItems.length;
+
+      // Region counts
+      document.getElementById('count-region-all').textContent = itineraryItems.length;
+      document.getElementById('count-region-naples').textContent = itineraryItems.filter(i => i.region === 'naples').length;
+      document.getElementById('count-region-daytrips').textContent = itineraryItems.filter(i => i.region === 'daytrips').length;
+      document.getElementById('count-region-amalfi').textContent = itineraryItems.filter(i => i.region === 'amalfi').length;
+      document.getElementById('count-region-rome').textContent = itineraryItems.filter(i => i.region === 'rome').length;
+
+      // Access chip counts (scoped to active region for helpful context)
+      const regionScoped = state.region === 'all'
+        ? itineraryItems
+        : itineraryItems.filter(i => i.region === state.region);
+
+      document.getElementById('count-chip-strict').textContent = regionScoped.filter(i => i.accessTags.includes('strict')).length;
+      document.getElementById('count-chip-flexible').textContent = regionScoped.filter(i => i.accessTags.includes('flexible')).length;
+      document.getElementById('count-chip-free').textContent = regionScoped.filter(i => i.accessTags.includes('free')).length;
+      document.getElementById('count-chip-dining').textContent = regionScoped.filter(i => i.accessTags.includes('dining')).length;
+
+      // Shortlist count & live adult ticket total
+      document.getElementById('shortlist-count').textContent = state.shortlisted.size;
+      let totalAdultEur = 0;
+      state.shortlisted.forEach(id => {
+        const found = itineraryItems.find(i => i.id === id);
+        if (found && found.adultPriceEur > 0) {
+          totalAdultEur += found.adultPriceEur;
+        }
+      });
+      document.getElementById('shortlist-total-eur').textContent = `€${totalAdultEur.toFixed(2)}`;
+
+      // Show/hide reset button
+      const isFiltered = state.region !== 'all' || state.access !== 'all' || state.search.trim() !== '' || state.shortlistOnly;
+      const resetBtn = document.getElementById('reset-filters-btn');
+      if (isFiltered) {
+        resetBtn.classList.remove('hidden');
+      } else {
+        resetBtn.classList.add('hidden');
+      }
+    }
+
+    // RENDER MATRIX TABLE
+    function renderMatrixTable(items) {
+      const tbody = document.getElementById('matrix-tbody');
+      const emptyState = document.getElementById('empty-state');
+      tbody.innerHTML = '';
+
+      if (items.length === 0) {
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      items.forEach(item => {
+        const isStarred = state.shortlisted.has(item.id);
+        const tr = document.createElement('tr');
+        tr.className = "group hover:bg-paper/90 transition cursor-pointer";
+        tr.onclick = () => openDrawer(item.id);
+
+        tr.innerHTML = `
+          <td class="py-3 pl-3 pr-2 text-center align-top" onclick="toggleShortlist('${item.id}', event)">
+            <button
+              type="button"
+              aria-label="${isStarred ? 'Remove from shortlist' : 'Add to shortlist'}"
+              class="p-1 rounded hover:bg-stone-200/60 transition focus:outline-none"
+            >
+              ${renderStarSVG(isStarred)}
+            </button>
+          </td>
+          <td class="py-3 px-3 align-top">
+            <div class="flex items-start gap-1.5">
+              <span class="font-semibold text-ink group-hover:text-terracotta-700 transition leading-snug">
+                ${item.name}
+              </span>
+              ${item.link ? `
+                <a
+                  href="${item.link}"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onclick="event.stopPropagation()"
+                  title="Open booking/tour link"
+                  class="mt-0.5 text-subtle hover:text-terracotta-600 shrink-0"
+                >
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+                </a>
+              ` : ''}
+            </div>
+            <div class="text-[11.5px] text-muted mt-0.5 leading-snug">
+              <span class="font-medium text-subtle">${item.regionLabel} &bull; ${item.subArea}</span>
+              ${item.address && item.address !== item.subArea ? ` &mdash; ${item.address}` : ''}
+            </div>
+          </td>
+          <td class="py-3 px-3 align-top">
+            ${renderBookingPill(item.bookingTier)}
+          </td>
+          <td class="py-3 px-3 align-top text-right font-mono tabular-nums">
+            <div class="font-semibold text-ink text-xs sm:text-[13px]">
+              ${item.priceDisplay}
+            </div>
+            <div class="text-[11px] text-subtle mt-0.5 leading-tight">
+              ${item.priceSub}
+            </div>
+          </td>
+          <td class="py-3 px-3 align-top">
+            <div class="text-xs font-medium text-ink leading-snug">
+              ${item.hoursSummary}
+            </div>
+            <div class="text-[11.5px] text-muted mt-0.5 leading-snug">
+              ${item.restrictionSummary}
+            </div>
+          </td>
+          <td class="py-3 pl-2 pr-4 text-right align-top">
+            <button
+              type="button"
+              aria-label="Inspect details for ${item.name}"
+              class="p-1 rounded text-subtle group-hover:text-ink group-hover:translate-x-0.5 transition"
+            >
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </button>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // RENDER STRUCTURED CARDS
+    function renderCardsView(items) {
+      const container = document.getElementById('cards-wrapper');
+      container.innerHTML = '';
+
+      if (items.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full bg-surface border border-hairline rounded-xl py-16 px-4 text-center">
+            <p class="font-serif text-lg font-semibold text-ink">No matching itinerary items</p>
+            <p class="text-xs text-muted mt-1">Adjust your region, access filter, or search terms.</p>
+            <button onclick="resetFilters()" class="mt-4 px-3.5 py-1.5 rounded-lg text-xs font-medium bg-ink text-white">Reset all filters</button>
+          </div>
+        `;
+        return;
+      }
+
+      items.forEach(item => {
+        const isStarred = state.shortlisted.has(item.id);
+        const card = document.createElement('article');
+        card.className = "group bg-surface border border-hairline hover:border-stone-400 rounded-xl p-4 flex flex-col justify-between transition cursor-pointer";
+        card.onclick = () => openDrawer(item.id);
+
+        card.innerHTML = `
+          <div>
+            <!-- Card Header: Region + Price -->
+            <div class="flex items-start justify-between gap-2 pb-2.5 mb-2.5 border-b border-hairline">
+              <div class="text-[11px] font-mono uppercase tracking-wider text-subtle">
+                ${item.regionLabel} &bull; ${item.subArea}
+              </div>
+              <div class="text-right font-mono tabular-nums shrink-0">
+                <span class="text-xs font-semibold text-ink">${item.priceDisplay}</span>
+              </div>
+            </div>
+
+            <!-- Title & Address -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <h3 class="font-serif text-lg font-bold text-ink group-hover:text-terracotta-700 leading-snug transition">
+                ${item.name}
+              </h3>
+              <button
+                type="button"
+                onclick="toggleShortlist('${item.id}', event)"
+                aria-label="Toggle shortlist"
+                class="p-1 rounded hover:bg-paper shrink-0"
+              >
+                ${renderStarSVG(isStarred)}
+              </button>
+            </div>
+            <p class="text-xs text-muted mb-3">${item.address}</p>
+
+            <!-- Booking Pill & Price Sub -->
+            <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+              ${renderBookingPill(item.bookingTier)}
+              <span class="font-mono text-[11px] text-subtle tabular-nums">${item.priceSub}</span>
+            </div>
+
+            <!-- Hours & Restriction Receipt Line -->
+            <div class="bg-paper border border-hairline rounded-lg p-2.5 space-y-1 text-xs mb-3">
+              <div class="font-medium text-ink">${item.hoursSummary}</div>
+              <div class="text-[11.5px] text-muted">${item.restrictionSummary}</div>
+            </div>
+
+            <p class="text-xs text-muted leading-relaxed line-clamp-2">
+              ${item.notes}
+            </p>
+          </div>
+
+          <div class="pt-3 mt-3 border-t border-hairline flex items-center justify-between text-xs">
+            <span class="font-medium text-terracotta-700 group-hover:underline inline-flex items-center gap-1">
+              <span>Inspect full rules &amp; tiers</span>
+              <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+            </span>
+            ${item.link ? `
+              <a
+                href="${item.link}"
+                target="_blank"
+                rel="noopener noreferrer"
+                onclick="event.stopPropagation()"
+                class="inline-flex items-center gap-1 text-muted hover:text-ink font-medium"
+              >
+                <span>Link</span>
+                <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" x2="21" y1="14" y2="3"/></svg>
+              </a>
+            ` : ''}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // MASTER RENDER
+    function render() {
+      const filtered = getFilteredItems();
+      updateCounters(filtered.length);
+
+      if (state.viewMode === 'matrix') {
+        renderMatrixTable(filtered);
+      } else {
+        renderCardsView(filtered);
+      }
+    }
+
+    // SLIDE-OVER DETAIL DRAWER
+    function openDrawer(id) {
+      const item = itineraryItems.find(i => i.id === id);
+      if (!item) return;
+      state.activeDrawerId = id;
+
+      document.getElementById('drawer-region-badge').textContent = `${item.regionLabel} • ${item.subArea}`;
+      document.getElementById('drawer-number').textContent = `#${String(item.num).padStart(2, '0')}`;
+      document.getElementById('drawer-tier-container').innerHTML = renderBookingPill(item.bookingTier);
+      document.getElementById('drawer-title').textContent = item.name;
+      document.getElementById('drawer-address').textContent = item.address;
+
+      // Admission Breakdown Receipt
+      const admissionContainer = document.getElementById('drawer-admission-list');
+      admissionContainer.innerHTML = item.admissionBreakdown.map(row => `
+        <div class="flex items-baseline justify-between gap-4 py-1 border-b border-dashed border-hairline last:border-b-0">
+          <span class="text-muted">${row.label}</span>
+          <span class="font-mono font-semibold text-ink tabular-nums text-right shrink-0">${row.price}</span>
+        </div>
+      `).join('');
+
+      document.getElementById('drawer-hours').textContent = item.hoursSummary;
+      document.getElementById('drawer-leadtime').textContent = item.leadTime;
+      document.getElementById('drawer-restrictions').textContent = item.restrictionsFull;
+      document.getElementById('drawer-notes').textContent = item.notes;
+
+      const linkBox = document.getElementById('drawer-link-box');
+      const linkEl = document.getElementById('drawer-external-link');
+      if (item.link) {
+        linkEl.href = item.link;
+        linkBox.classList.remove('hidden');
+      } else {
+        linkBox.classList.add('hidden');
+      }
+
+      updateDrawerShortlistUI(item);
+      document.getElementById('detail-drawer-backdrop').classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function updateDrawerShortlistUI(item) {
+      const isStarred = state.shortlisted.has(item.id);
+      const btn = document.getElementById('drawer-star-btn');
+      const icon = document.getElementById('drawer-star-icon');
+      const label = document.getElementById('drawer-star-label');
+
+      if (isStarred) {
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-900 border border-amber-300 transition";
+        icon.setAttribute('fill', '#F59E0B');
+        icon.classList.add('text-amber-600');
+        label.textContent = "Shortlisted";
+      } else {
+        btn.className = "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium bg-surface text-ink border border-hairline hover:bg-paper transition";
+        icon.setAttribute('fill', 'none');
+        icon.classList.remove('text-amber-600');
+        label.textContent = "Shortlist";
+      }
+    }
+
+    function closeDrawer() {
+      document.getElementById('detail-drawer-backdrop').classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+      state.activeDrawerId = null;
+    }
+
+    // CONTROLS & INTERACTIONS
+    function setRegion(region) {
+      state.region = region;
+      document.querySelectorAll('.region-tab').forEach(btn => {
+        if (btn.dataset.region === region) {
+          btn.className = "region-tab px-3 py-1.5 rounded-lg text-xs font-semibold bg-ink text-white transition whitespace-nowrap";
+        } else {
+          btn.className = "region-tab px-3 py-1.5 rounded-lg text-xs font-medium bg-paper text-muted hover:text-ink border border-hairline transition whitespace-nowrap";
+        }
+      });
+      render();
+    }
+
+    function setAccessFilter(access) {
+      state.access = access;
+      document.querySelectorAll('.access-chip').forEach(btn => {
+        if (btn.dataset.access === access) {
+          btn.classList.add('ring-2', 'ring-ink', 'ring-offset-1');
+        } else {
+          btn.classList.remove('ring-2', 'ring-ink', 'ring-offset-1');
+        }
+      });
+      render();
+    }
+
+    function toggleShortlistOnly() {
+      state.shortlistOnly = !state.shortlistOnly;
+      const btn = document.getElementById('shortlist-toggle-btn');
+      const star = document.getElementById('shortlist-header-star');
+
+      if (state.shortlistOnly) {
+        btn.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold bg-amber-50 text-amber-950 border border-amber-300 ring-1 ring-amber-400 transition";
+        star.setAttribute('fill', '#F59E0B');
+      } else {
+        btn.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-paper hover:bg-amber-50/70 text-ink border border-hairline transition";
+        star.setAttribute('fill', 'none');
+      }
+      render();
+    }
+
+    function handleSearchInput() {
+      const input = document.getElementById('search-input');
+      state.search = input.value;
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (state.search.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+      render();
+    }
+
+    function clearSearch() {
+      document.getElementById('search-input').value = '';
+      state.search = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+      render();
+    }
+
+    function resetFilters() {
+      state.region = 'all';
+      state.access = 'all';
+      state.search = '';
+      state.shortlistOnly = false;
+
+      document.getElementById('search-input').value = '';
+      document.getElementById('clear-search-btn').classList.add('hidden');
+
+      setRegion('all');
+      setAccessFilter('all');
+
+      const slBtn = document.getElementById('shortlist-toggle-btn');
+      const slStar = document.getElementById('shortlist-header-star');
+      slBtn.className = "inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium bg-paper hover:bg-amber-50/70 text-ink border border-hairline transition";
+      slStar.setAttribute('fill', 'none');
+
+      render();
+    }
+
+    function setViewMode(mode) {
+      state.viewMode = mode;
+      const matrixWrapper = document.getElementById('matrix-wrapper');
+      const cardsWrapper = document.getElementById('cards-wrapper');
+      const btnMatrix = document.getElementById('btn-view-matrix');
+      const btnCards = document.getElementById('btn-view-cards');
+
+      if (mode === 'matrix') {
+        matrixWrapper.classList.remove('hidden');
+        cardsWrapper.classList.add('hidden');
+        btnMatrix.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface text-ink border border-hairline shadow-2xs transition";
+        btnCards.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-muted hover:text-ink border border-transparent transition";
+      } else {
+        matrixWrapper.classList.add('hidden');
+        cardsWrapper.classList.remove('hidden');
+        btnCards.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-surface text-ink border border-hairline shadow-2xs transition";
+        btnMatrix.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md text-muted hover:text-ink border border-transparent transition";
+      }
+      render();
+    }
+
+    function toggleReferenceStrip() {
+      const body = document.getElementById('ref-strip-body');
+      const toggle = document.getElementById('ref-strip-toggle');
+      const label = document.getElementById('ref-strip-label');
+      const chevron = document.getElementById('ref-strip-chevron');
+
+      const isHidden = body.classList.contains('hidden');
+      if (isHidden) {
+        body.classList.remove('hidden');
+        toggle.setAttribute('aria-expanded', 'true');
+        label.textContent = 'Collapse';
+        chevron.classList.add('rotate-180');
+      } else {
+        body.classList.add('hidden');
+        toggle.setAttribute('aria-expanded', 'false');
+        label.textContent = 'Expand';
+        chevron.classList.remove('rotate-180');
+      }
+    }
+
+    let toastTimeout = null;
+    function showStatusToast(message) {
+      const toast = document.getElementById('status-toast');
+      const text = document.getElementById('status-toast-text');
+      text.textContent = message;
+      toast.classList.remove('opacity-0', 'translate-y-3');
+      toast.classList.add('opacity-100', 'translate-y-0');
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove('opacity-100', 'translate-y-0');
+        toast.classList.add('opacity-0', 'translate-y-3');
+      }, 2200);
+    }
+
+    // KEYBOARD SHORTCUTS
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && state.activeDrawerId) {
+        closeDrawer();
+      }
+    });
+
+    // INITIALIZE ON LOAD
+    window.onload = function () {
+      loadShortlist();
+      setAccessFilter('all');
+      render();
+    };
+  </script>
+</body>
+</html>
